@@ -1,28 +1,28 @@
 <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#25f6ff;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6f3ff2;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a9eff;stop-opacity:1" />
     </linearGradient>
   </defs>
   <!-- Dark background -->
-  <rect width="256" height="256" fill="#0a0e27"/>
+  <rect width="256" height="256" fill="#1a1f2e"/>
   <!-- Outer glow circle -->
   <circle cx="128" cy="128" r="125" fill="none" stroke="url(#logoGrad)" stroke-width="3" opacity="0.6"/>
   <!-- Node network: 4 corner nodes + 1 center -->
-  <circle cx="64" cy="64" r="10" fill="#25f6ff" filter="drop-shadow(0 0 8px rgba(37,246,255,0.6))"/>
-  <circle cx="192" cy="64" r="10" fill="#6f3ff2" filter="drop-shadow(0 0 8px rgba(111,63,242,0.6))"/>
-  <circle cx="64" cy="192" r="10" fill="#6f3ff2" filter="drop-shadow(0 0 8px rgba(111,63,242,0.6))"/>
-  <circle cx="192" cy="192" r="10" fill="#25f6ff" filter="drop-shadow(0 0 8px rgba(37,246,255,0.6))"/>
-  <circle cx="128" cy="128" r="12" fill="#25f6ff" filter="drop-shadow(0 0 12px rgba(37,246,255,0.8))"/>
+  <circle cx="64" cy="64" r="10" fill="#d4af37" filter="drop-shadow(0 0 8px rgba(212,175,55,0.6))"/>
+  <circle cx="192" cy="64" r="10" fill="#4a9eff" filter="drop-shadow(0 0 8px rgba(74,158,255,0.6))"/>
+  <circle cx="64" cy="192" r="10" fill="#4a9eff" filter="drop-shadow(0 0 8px rgba(74,158,255,0.6))"/>
+  <circle cx="192" cy="192" r="10" fill="#d4af37" filter="drop-shadow(0 0 8px rgba(212,175,55,0.6))"/>
+  <circle cx="128" cy="128" r="12" fill="#d4af37" filter="drop-shadow(0 0 12px rgba(212,175,55,0.8))"/>
   <!-- Connection lines (network edges) -->
-  <line x1="64" y1="64" x2="128" y2="128" stroke="#25f6ff" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
-  <line x1="192" y1="64" x2="128" y2="128" stroke="#6f3ff2" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
-  <line x1="64" y1="192" x2="128" y2="128" stroke="#6f3ff2" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
-  <line x1="192" y1="192" x2="128" y2="128" stroke="#25f6ff" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+  <line x1="64" y1="64" x2="128" y2="128" stroke="#d4af37" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+  <line x1="192" y1="64" x2="128" y2="128" stroke="#4a9eff" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+  <line x1="64" y1="192" x2="128" y2="128" stroke="#4a9eff" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+  <line x1="192" y1="192" x2="128" y2="128" stroke="#d4af37" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
   <!-- Diagonal subnet lines -->
   <line x1="64" y1="64" x2="192" y2="192" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4,4"/>
   <line x1="192" y1="64" x2="64" y2="192" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4,4"/>
   <!-- Inner ring accent -->
-  <circle cx="128" cy="128" r="100" fill="none" stroke="#25f6ff" stroke-width="1" opacity="0.25"/>
+  <circle cx="128" cy="128" r="100" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.25"/>
 </svg>

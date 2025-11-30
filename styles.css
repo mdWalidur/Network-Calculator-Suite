@@ -4,19 +4,20 @@
 
 /* CSS Variables - Extended Color & Design System */
 :root {
-  --primary-teal: #25f6ff;
-  --primary-indigo: #6366f1;
-  --primary-violet: #a855f7;
-  --gold-accent: #ffd166;
+  --primary-gold: #d4af37;
+  --primary-blue: #4a9eff;
+  --primary-light: #f0f4f8;
+  --accent-gold-light: #e8c547;
+  --accent-blue-light: #6bb3ff;
   
-  --bg-dark: #0a0e27;
-  --bg-surface: #111633;
-  --bg-panel: #1a1f3a;
-  --border-light: #2d3a54;
+  --bg-dark: #1a1f2e;
+  --bg-surface: #22273a;
+  --bg-panel: #2a3142;
+  --border-light: #3d4556;
   
-  --text-primary: #e6f0ff;
-  --text-secondary: #b4bfd1;
-  --text-muted: #8999a8;
+  --text-primary: #e8eef5;
+  --text-secondary: #b8c3d1;
+  --text-muted: #8b95a5;
   
   --glass-blur: 12px;
   --glass-opacity: 0.85;
@@ -25,9 +26,9 @@
   --radius-lg: 20px;
   
   --mono: 'Courier New', monospace;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
   
   --transition: 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-fast: 0.12s ease-out;
@@ -79,10 +80,10 @@ body {
   overflow-y: auto;
   
   /* Glassmorphism enhancement */
-  background: rgba(10, 14, 39, 0.95);
+  background: rgba(26, 31, 46, 0.95);
   backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(45, 58, 84, 0.5);
-  box-shadow: inset -1px 0 0 rgba(37, 246, 255, 0.05);
+  border-right: 1px solid rgba(61, 69, 86, 0.6);
+  box-shadow: inset -1px 0 0 rgba(212, 175, 55, 0.05);
 }
 
 .sidebar-header {

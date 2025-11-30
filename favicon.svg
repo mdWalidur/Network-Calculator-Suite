@@ -1,25 +1,25 @@
 <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="fGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#25f6ff;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#ffd166;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6f3ff2;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4a9eff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8bc5ff;stop-opacity:1" />
     </linearGradient>
   </defs>
   <!-- Dark background circle -->
-  <circle cx="64" cy="64" r="64" fill="#0a0e27"/>
+  <circle cx="64" cy="64" r="64" fill="#1a1f2e"/>
   <!-- Outer gradient ring -->
   <circle cx="64" cy="64" r="62" fill="none" stroke="url(#fGrad)" stroke-width="2"/>
   <!-- 'WR' Monogram -->
-  <g fill="#e6f0ff" font-family="Inter, sans-serif" font-weight="800" font-size="52" letter-spacing="-2" text-anchor="middle" dominant-baseline="central">
+  <g fill="#e8eef5" font-family="Inter, sans-serif" font-weight="800" font-size="52" letter-spacing="-2" text-anchor="middle" dominant-baseline="central">
     <text x="64" y="68">WR</text>
   </g>
-  <!-- Teal accent dots (subnet nodes) -->
-  <circle cx="32" cy="32" r="3" fill="#25f6ff" opacity="0.8"/>
-  <circle cx="96" cy="32" r="3" fill="#ffd166" opacity="0.8"/>
-  <circle cx="32" cy="96" r="3" fill="#ffd166" opacity="0.8"/>
-  <circle cx="96" cy="96" r="3" fill="#25f6ff" opacity="0.8"/>
+  <!-- Gold and blue accent dots (subnet nodes) -->
+  <circle cx="32" cy="32" r="3" fill="#d4af37" opacity="0.8"/>
+  <circle cx="96" cy="32" r="3" fill="#4a9eff" opacity="0.8"/>
+  <circle cx="32" cy="96" r="3" fill="#4a9eff" opacity="0.8"/>
+  <circle cx="96" cy="96" r="3" fill="#d4af37" opacity="0.8"/>
   <!-- Subtle connecting lines -->
-  <line x1="36" y1="36" x2="60" y2="60" stroke="#25f6ff" stroke-width="1" opacity="0.4"/>
-  <line x1="92" y1="36" x2="68" y2="60" stroke="#ffd166" stroke-width="1" opacity="0.4"/>
+  <line x1="36" y1="36" x2="60" y2="60" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+  <line x1="92" y1="36" x2="68" y2="60" stroke="#4a9eff" stroke-width="1" opacity="0.4"/>
 </svg>
