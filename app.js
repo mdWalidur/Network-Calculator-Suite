@@ -399,32 +399,110 @@ document.addEventListener("DOMContentLoaded", () => {
       if (pane) pane.style.display = "block";
     });
   });
-  
-  // Help modal
-  const helpBtn = document.querySelector(".help-btn");
+  // Settings dropdown and modal
+  const settingsBtn = document.getElementById("settingsBtn");
+  const settingsDropdown = document.getElementById("settingsDropdown");
+  const settingsItem = document.getElementById("settingsItem");
+  const aboutItem = document.getElementById("aboutItem");
   const backdrop = document.querySelector(".modal-backdrop");
   const modalClose = document.querySelector(".modal-close");
   const modalCloseBtn = document.getElementById("modal-close-btn");
-  
-  function openModal() {
+  const modalHeader = document.querySelector(".modal-header");
+  const modalBody = document.querySelector(".modal-body");
+  let htmlRef = document.documentElement;
+
+  // Toggle settings dropdown
+  settingsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    settingsDropdown.classList.toggle("show");
+  });
+
+  // Settings menu items
+  settingsItem.addEventListener("click", () => {
+    settingsDropdown.classList.remove("show");
+    showSettings();
+  });
+
+  aboutItem.addEventListener("click", () => {
+    settingsDropdown.classList.remove("show");
+    showAbout();
+  });
+
+  function showSettings() {
+    modalHeader.innerHTML = "<h2>Settings</h2>";
+    modalBody.innerHTML = `
+      <div class="settings-panel">
+        <div class="setting-group">
+          <label>Theme</label>
+          <button id="themeToggleLarge" class="btn">Switch to Light Mode</button>
+        </div>
+        <div class="setting-group">
+          <label>Display Options</label>
+          <p>More settings coming soon...</p>
+        </div>
+      </div>
+    `;
+    backdrop.classList.add("show");
+    const themeToggleLarge = document.getElementById("themeToggleLarge");
+    if (themeToggleLarge) {
+      const isLight = htmlRef.classList.contains("light-theme");
+      themeToggleLarge.textContent = isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
+      themeToggleLarge.addEventListener("click", () => {
+        setTheme(isLight ? "dark" : "light");
+        themeToggleLarge.textContent = !isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
+      });
+    }
+  }
+
+  function showAbout() {
+    modalHeader.innerHTML = "<h2>About Network Calculator Suite</h2>";
+    modalBody.innerHTML = `
+      <div class="about-panel">
+        <div class="about-logo">
+          <img src="logo.svg" alt="Network Calculator Suite Logo" />
+        </div>
+        <h3>Network Calculator Suite</h3>
+        <p class="version">v1.0.0</p>
+        <p class="description">A professional subnetting calculator suite with advanced networking tools for IPv4, IPv6, VLSM, Supernetting, and Binary calculations.</p>
+        <div class="about-features">
+          <h4>Features:</h4>
+          <ul>
+            <li>IPv4 Subnetting Calculator with DHCP Planning</li>
+            <li>IPv6 Calculator with Address Compression</li>
+            <li>VLSM (Variable Length Subnet Mask) Planning</li>
+            <li>Route Aggregation (Supernetting)</li>
+            <li>Binary Visualization</li>
+          </ul>
+        </div>
+        <p class="copyright">© 2025 WR - Network Intelligence Suite</p>
+      </div>
+    `;
     backdrop.classList.add("show");
   }
-  
+
   function closeModal() {
     backdrop.classList.remove("show");
+    settingsDropdown.classList.remove("show");
   }
-  
-  helpBtn.addEventListener("click", openModal);
+
   modalClose.addEventListener("click", closeModal);
   modalCloseBtn.addEventListener("click", closeModal);
   backdrop.addEventListener("click", (e) => {
     if (e.target === backdrop) closeModal();
   });
-  
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && backdrop.classList.contains("show")) closeModal();
+
+  document.addEventListener("click", (e) => {
+    if (!settingsBtn.contains(e.target) && !settingsDropdown.contains(e.target)) {
+      settingsDropdown.classList.remove("show");
+    }
   });
-  
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
   // Expose activeCalc for header buttons
   window.activeCalc = function() {
     const active = document.querySelector(".sidebar-item.active")?.dataset.tab || "ipv4";

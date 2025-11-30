@@ -1,25 +1,27 @@
-<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="fGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="faviconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#4a9eff;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8bc5ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a9eff;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <!-- Dark background circle -->
-  <circle cx="64" cy="64" r="64" fill="#1a1f2e"/>
-  <!-- Outer gradient ring -->
-  <circle cx="64" cy="64" r="62" fill="none" stroke="url(#fGrad)" stroke-width="2"/>
-  <!-- 'WR' Monogram -->
-  <g fill="#e8eef5" font-family="Inter, sans-serif" font-weight="800" font-size="52" letter-spacing="-2" text-anchor="middle" dominant-baseline="central">
-    <text x="64" y="68">WR</text>
-  </g>
-  <!-- Gold and blue accent dots (subnet nodes) -->
-  <circle cx="32" cy="32" r="3" fill="#d4af37" opacity="0.8"/>
-  <circle cx="96" cy="32" r="3" fill="#4a9eff" opacity="0.8"/>
-  <circle cx="32" cy="96" r="3" fill="#4a9eff" opacity="0.8"/>
-  <circle cx="96" cy="96" r="3" fill="#d4af37" opacity="0.8"/>
-  <!-- Subtle connecting lines -->
-  <line x1="36" y1="36" x2="60" y2="60" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
-  <line x1="92" y1="36" x2="68" y2="60" stroke="#4a9eff" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Background dark circle -->
+  <circle cx="100" cy="100" r="95" fill="#1a1f2e" stroke="url(#faviconGrad)" stroke-width="3"/>
+  
+  <!-- Inner accent circle -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="url(#faviconGrad)" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Network symbol - small nodes -->
+  <circle cx="80" cy="75" r="6" fill="#d4af37"/>
+  <circle cx="120" cy="75" r="6" fill="#4a9eff"/>
+  <circle cx="100" cy="115" r="6" fill="#d4af37"/>
+  
+  <!-- Network connections -->
+  <line x1="80" y1="75" x2="100" y2="115" stroke="url(#faviconGrad)" stroke-width="1.5" opacity="0.7"/>
+  <line x1="120" y1="75" x2="100" y2="115" stroke="url(#faviconGrad)" stroke-width="1.5" opacity="0.7"/>
+  <line x1="80" y1="75" x2="120" y2="75" stroke="url(#faviconGrad)" stroke-width="1.5" opacity="0.7"/>
+  
+  <!-- WR Monogram -->
+  <text x="100" y="155" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" text-anchor="middle" fill="url(#faviconGrad)">WR</text>
 </svg>
