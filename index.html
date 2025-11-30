@@ -13,106 +13,75 @@
   <link rel="shortcut icon" href="logo.svg" />
   <link rel="apple-touch-icon" href="logo.svg" />
   <style>
-    :root {
-      --bg: #0b1220;
-      --card: #0f172a;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --border: #1f2937;
-      --accent: #2563eb;
-      --accent-2: #059669;
-      --accent-3: #f59e0b;
-      --warn-bg: #3f2d00;
-      --warn-text: #fbbf24;
-      --error: #ef4444;
+    /* Futuristic dark + neon glass theme (mobile-first) */
+    :root{
+      --bg: #030617;
+      --panel: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.06);
+      --muted: #9aa7b2;
+      --text: #e6f0ff;
+      --neon-blue: #3ee0ff;
+      --neon-green: #7cffb2;
+      --accent: var(--neon-blue);
+      --accent-2: var(--neon-green);
+      --radius: 14px;
+      --glass-blur: 8px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      --radius: 12px;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: linear-gradient(180deg, #0b1220 0%, #0a1021 100%); color: var(--text); font-family: Segoe UI, Arial, sans-serif; }
-    .container { max-width: 1180px; margin: 24px auto; padding: 0 16px; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .logo { width: 48px; height: 48px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); box-shadow: 0 6px 18px rgba(2,6,23,0.6); }
-    .logo svg { width: 30px; height: 30px; display: block; }
-    .copyright { margin-top: 8px; color: var(--muted); font-size: 12px; }
-    h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
-    .subtitle { color: var(--muted); font-size: 14px; }
-    .tabs { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-    .tab { background: #0b1220; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 999px; cursor: pointer; }
-    .tab.active { background: var(--accent); border-color: var(--accent); }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 12px; }
-    .three { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 12px; }
-    .four { display: grid; grid-template-columns: repeat(4, minmax(200px, 1fr)); gap: 12px; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; }
-    <style>
-      /* Minimal, mobile-first responsive styles */
-      :root{
-        --bg: #ffffff;
-        --paper: #fbfbfb;
-        --text: #0b1220;
-        --muted: #6b7280;
-        --accent: #e63946;
-        --accent-2: #0b5cff;
-        --accent-3: #ffd166;
-        --border: #e6e6e6;
-        --radius: 10px;
-        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      }
-      *{box-sizing:border-box}
-      body{margin:0;background:var(--paper);color:var(--text);font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
-      .container{max-width:1100px;margin:20px auto;padding:18px}
-
-      header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-      .brand{display:flex;align-items:center;gap:12px}
-      .logo{width:56px;height:56px;border-radius:8px;background:var(--accent-2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px}
-      h1{margin:0;font-size:20px;font-weight:800}
-      .subtitle{color:var(--muted);font-size:13px}
-
-      .actions{display:flex;gap:8px;align-items:center}
-      .btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
-      .btn.secondary{background:var(--accent-2)}
-      .btn.alt{background:var(--accent-3);color:#111}
-
-      .tabs{display:flex;gap:8px;overflow:auto;padding-top:12px}
-      .tab{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:2px solid var(--border);background:transparent;color:var(--text);font-weight:700;cursor:pointer}
-      .tab.active{border-color:var(--accent);color:var(--accent)}
-
-      .card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px}
-      .section-title{font-size:16px;margin:0 0 10px 0;font-weight:800}
-
-      .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-      .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-      label{display:block;font-weight:700;margin-bottom:6px;color:var(--text);font-size:14px}
-      input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:14px}
-      textarea{min-height:96px}
-
-      table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
-      th,td{border:1px solid var(--border);padding:8px;text-align:left}
-      th{background:transparent;color:var(--muted);font-weight:700}
-
-      .kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px}
-      .kpi .card{padding:12px}
-
-      .pill{display:inline-block;padding:6px 10px;border-radius:8px;border:1px solid var(--border);color:var(--muted);background:transparent;font-size:12px}
-      .mono{font-family:var(--mono)}
-      .warn{background:#fff4e6;color:#7a4b00;border:1px solid #ffe4b5;padding:10px;border-radius:8px}
-
-      footer{margin:22px 0;text-align:center;color:var(--muted);font-size:13px}
-
-      /* Mobile adjustments */
-      @media (max-width:880px){
-        .grid{grid-template-columns:1fr}
-        .three{grid-template-columns:1fr}
-        .kpi{grid-template-columns:1fr}
-        header{flex-direction:column;align-items:flex-start;gap:8px}
-        .actions{width:100%;display:flex;gap:8px}
-        .btn{flex:1}
-        .tabs{gap:6px}
-        .logo{width:48px;height:48px;font-size:18px}
-      }
-    </style>
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#01040a 0%,#041022 60%);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    .container{max-width:1180px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-green));display:flex;align-items:center;justify-content:center;color:#001020;font-weight:800;font-size:20px;box-shadow:0 8px 30px rgba(62,224,255,0.06),0 2px 8px rgba(124,255,178,0.04)}
+    h1{margin:0;font-size:20px;font-weight:800;letter-spacing:0.6px}
+    .subtitle{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:10px;align-items:center}
+    .btn{background:linear-gradient(90deg,var(--neon-blue),#63f0ff);color:#011; border:none;padding:10px 16px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(62,224,255,0.08);transition:transform .18s ease,box-shadow .18s ease}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(62,224,255,0.16)}
+    .btn:active{transform:translateY(0)}
+    .btn.secondary{background:linear-gradient(90deg,var(--neon-green),#9affc9);box-shadow:0 6px 20px rgba(124,255,178,0.06)}
+    .btn.alt{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071018}
+    .tabs{display:flex;gap:10px;margin-top:12px;overflow:auto}
+    .tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--border);color:var(--muted);font-weight:700;cursor:pointer;backdrop-filter: blur(6px);}
+    .tab .icon{width:18px;height:18px;display:inline-block;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6))}
+    .tab.active{color:var(--text);box-shadow:0 8px 30px rgba(62,224,255,0.04),inset 0 0 18px rgba(62,224,255,0.03);border-color:rgba(62,224,255,0.14)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:14px;backdrop-filter: blur(var(--glass-blur));}
+    .section-title{font-size:16px;margin:0 0 10px 0;font-weight:800}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    label{display:block;font-weight:700;margin-bottom:6px;color:var(--muted);font-size:13px}
+    input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);color:var(--text);font-size:14px;outline:none}
+    input:focus,select:focus,textarea:focus{box-shadow:0 6px 24px rgba(62,224,255,0.06);border-color:rgba(62,224,255,0.18)}
+    table{width:100%;border-collapse:collapse;margin-top:8px;color:var(--text)}
+    th,td{border-bottom:1px solid rgba(255,255,255,0.03);padding:10px;text-align:left}
+    th{color:var(--muted);font-weight:700}
+    .kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px}
+    .kpi .card{padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.02)}
+    .pill{display:inline-block;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);color:var(--muted);background:transparent;font-size:12px}
+    .mono{font-family:var(--mono)}
+    .warn{background:linear-gradient(90deg,rgba(255,200,100,0.06),rgba(255,200,100,0.03));color:#ffd89b;border:1px solid rgba(255,200,100,0.06);padding:10px;border-radius:10px}
+    footer{margin:22px 0;text-align:center;color:var(--muted);font-size:13px}
+    .small-muted{color:var(--muted);font-size:12px}
+    .icon-chip{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(62,224,255,0.06),rgba(124,255,178,0.04));display:inline-flex;align-items:center;justify-content:center}
+    /* Animated floating glow for logo */
+    @keyframes neonPulse{0%{box-shadow:0 6px 18px rgba(62,224,255,0.06)}50%{box-shadow:0 12px 40px rgba(62,224,255,0.12)}100%{box-shadow:0 6px 18px rgba(62,224,255,0.06)}}
+    .logo{animation:neonPulse 3.6s ease-in-out infinite}
+    .btn{transition:transform .18s ease,box-shadow .18s ease,opacity .18s}
+    /* small screens */
+    @media (max-width:880px){
+      .grid{grid-template-columns:1fr}
+      .three{grid-template-columns:1fr}
+      .kpi{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start;gap:10px}
+      .actions{width:100%;display:flex}
+      .btn{flex:1}
+      .tab{padding:8px 10px}
+    }
+    /* subtle transitions */
+    *{transition:background-color .18s, color .18s, border-color .18s}
 </head>
 <body>
   <div class="container">
@@ -129,12 +98,27 @@
       </div>
     </header>
 
-    <div class="tabs">
-      <div class="tab active" data-tab="ipv4">IPv4</div>
-      <div class="tab" data-tab="ipv6">IPv6</div>
-      <div class="tab" data-tab="vlsm">VLSM</div>
-      <div class="tab" data-tab="supernet">Supernet</div>
-      <div class="tab" data-tab="binary">Binary view</div>
+    <div class="tabs" role="tablist" aria-label="Calculator sections">
+      <div class="tab active" data-tab="ipv4" role="tab">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="12" r="2" stroke-width="1.5" stroke="#3ee0ff"/><circle cx="18" cy="6" r="2" stroke-width="1.5" stroke="#7cffb2"/><circle cx="18" cy="18" r="2" stroke-width="1.5" stroke="#3ee0ff"/><path d="M8 12h8M18 8v8" stroke="#7cffb2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        IPv4
+      </div>
+      <div class="tab" data-tab="ipv6" role="tab">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#3ee0ff" stroke-width="1.5"/><path d="M8 8h8M8 12h8M8 16h8" stroke="#7cffb2" stroke-width="1" stroke-linecap="round"/></svg></span>
+        IPv6
+      </div>
+      <div class="tab" data-tab="vlsm" role="tab">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h18" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/><path d="M6 12h12" stroke="#7cffb2" stroke-width="1.6" stroke-linecap="round"/><path d="M9 17h6" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        VLSM
+      </div>
+      <div class="tab" data-tab="supernet" role="tab">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h6M14 12h6" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/><path d="M10 12l2-2v4l-2-2z" fill="#7cffb2"/></svg></span>
+        Supernet
+      </div>
+      <div class="tab" data-tab="binary" role="tab">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="4" height="4" fill="#3ee0ff"/><rect x="10" y="5" width="4" height="4" fill="#7cffb2"/><rect x="16" y="5" width="4" height="4" fill="#3ee0ff"/><rect x="4" y="13" width="4" height="4" fill="#7cffb2"/><rect x="10" y="13" width="4" height="4" fill="#3ee0ff"/><rect x="16" y="13" width="4" height="4" fill="#7cffb2"/></svg></span>
+        Binary
+      </div>
     </div>
 
     <!-- IPv4 tab -->
@@ -374,8 +358,8 @@
     <!-- AI Assistant removed per user request -->
 
     <footer>
-      <div>Built for labs and operations: fast calculations, clean documentation, and practical helpers.</div>
-      <div class="copyright">&copy; <span id="copyrightYear"></span> Network Calculator Suite — All rights reserved.</div>
+      <div class="small-muted">Built for labs and operations — clean, fast, professional.</div>
+      <div class="copyright">&copy; 2025 WR</div>
     </footer>
   </div>
 
