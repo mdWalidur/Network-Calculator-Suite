@@ -2,317 +2,361 @@
 <html lang="en">
 <head>
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
   <meta charset="UTF-8" />
   <title>Network Calculator Suite</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="logo.svg" type="image/svg+xml">
-  <link rel="shortcut icon" href="logo.svg" />
-  <link rel="apple-touch-icon" href="logo.svg" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
   <link rel="stylesheet" href="styles.css">
+</head>
 <body>
   <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="false" title="Network Calculator">
-          <img src="logo.svg" alt="Network Calculator logo" width="40" height="40" style="display:block;" />
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark" title="Network Calculator Suite">
+          <img src="logo.svg" alt="Network Calculator Suite" />
         </div>
+        <h1 class="brand-title">Network<br>Calculator</h1>
       </div>
-      <div class="row">
-        <button class="btn" onclick="activeCalc().calculate()">Calculate</button>
-        <button class="btn secondary" onclick="activeCalc().export()">Export CSV</button>
-        <button class="btn alt" onclick="activeCalc().copy()">Copy summary</button>
+      <nav class="sidebar-nav" role="navigation">
+        <button class="sidebar-item active" data-tab="ipv4" title="IPv4 Subnetting Calculator">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="12" r="2" stroke-width="1.5" stroke="currentColor"/><circle cx="18" cy="6" r="2" stroke-width="1.5" stroke="currentColor"/><circle cx="18" cy="18" r="2" stroke-width="1.5" stroke="currentColor"/><path d="M8 12h8M18 8v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="label">IPv4</span>
+        </button>
+        <button class="sidebar-item" data-tab="ipv6" title="IPv6 Calculator">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></span>
+          <span class="label">IPv6</span>
+        </button>
+        <button class="sidebar-item" data-tab="vlsm" title="Variable Length Subnet Mask">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M6 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 17h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span class="label">VLSM</span>
+        </button>
+        <button class="sidebar-item" data-tab="supernet" title="Route Aggregation">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h6M14 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 12l2-2v4l-2-2z" fill="currentColor"/></svg></span>
+          <span class="label">Supernet</span>
+        </button>
+        <button class="sidebar-item" data-tab="binary" title="Binary Visualization">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/><rect x="16" y="5" width="4" height="4" fill="currentColor"/><rect x="4" y="13" width="4" height="4" fill="currentColor"/><rect x="10" y="13" width="4" height="4" fill="currentColor"/><rect x="16" y="13" width="4" height="4" fill="currentColor"/></svg></span>
+          <span class="label">Binary</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="help-btn" title="Help & about">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+        </button>
       </div>
-    </header>
+    </aside>
 
-    <div class="tabs" role="tablist" aria-label="Calculator sections">
-      <div class="tab active" data-tab="ipv4" role="tab">
-        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="12" r="2" stroke-width="1.5" stroke="#3ee0ff"/><circle cx="18" cy="6" r="2" stroke-width="1.5" stroke="#7cffb2"/><circle cx="18" cy="18" r="2" stroke-width="1.5" stroke="#3ee0ff"/><path d="M8 12h8M18 8v8" stroke="#7cffb2" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        IPv4
-      </div>
-      <div class="tab" data-tab="ipv6" role="tab">
-        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#3ee0ff" stroke-width="1.5"/><path d="M8 8h8M8 12h8M8 16h8" stroke="#7cffb2" stroke-width="1" stroke-linecap="round"/></svg></span>
-        IPv6
-      </div>
-      <div class="tab" data-tab="vlsm" role="tab">
-        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h18" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/><path d="M6 12h12" stroke="#7cffb2" stroke-width="1.6" stroke-linecap="round"/><path d="M9 17h6" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-        VLSM
-      </div>
-      <div class="tab" data-tab="supernet" role="tab">
-        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12h6M14 12h6" stroke="#3ee0ff" stroke-width="1.6" stroke-linecap="round"/><path d="M10 12l2-2v4l-2-2z" fill="#7cffb2"/></svg></span>
-        Supernet
-      </div>
-      <div class="tab" data-tab="binary" role="tab">
-        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="4" height="4" fill="#3ee0ff"/><rect x="10" y="5" width="4" height="4" fill="#7cffb2"/><rect x="16" y="5" width="4" height="4" fill="#3ee0ff"/><rect x="4" y="13" width="4" height="4" fill="#7cffb2"/><rect x="10" y="13" width="4" height="4" fill="#3ee0ff"/><rect x="16" y="13" width="4" height="4" fill="#7cffb2"/></svg></span>
-        Binary
-      </div>
-    </div>
+    <!-- Main content -->
+    <div class="main">
+      <header class="top-bar">
+        <div class="header-title">
+          <h2 id="page-title">IPv4 Subnetting</h2>
+        </div>
+        <div class="header-actions">
+          <button class="btn" onclick="activeCalc().calculate()">Calculate</button>
+          <button class="btn secondary" onclick="activeCalc().export()">Export CSV</button>
+          <button class="btn alt" onclick="activeCalc().copy()">Copy summary</button>
+        </div>
+      </header>
 
-    <!-- IPv4 tab -->
-    <div class="card tabpane" id="ipv4" style="display:block;">
-      <h3 class="section-title">IPv4 subnetting</h3>
-      <div class="grid">
-        <div>
-          <label>Base network (IPv4)</label>
-          <input id="v4_baseNet" value="192.168.0.0" placeholder="e.g., 10.0.0.0" />
-          <div id="v4_baseNetErr" class="error" style="display:none;"></div>
-        </div>
-        <div>
-          <label>Base prefix</label>
-          <select id="v4_basePrefix"><option>8</option><option>12</option><option>16</option><option selected>24</option></select>
-        </div>
-        <div>
-          <label>Desired prefix</label>
-          <select id="v4_desiredPrefix"><option>25</option><option selected>26</option><option>27</option><option>28</option><option>29</option><option>30</option></select>
-        </div>
-        <div>
-          <label>Host requirement (per subnet)</label>
-          <input id="v4_hostReq" type="number" value="50" min="1" />
-        </div>
-      </div>
-      <div class="three" style="margin-top:12px;">
-        <div>
-          <label>VLAN ID (optional)</label>
-          <input id="v4_vlanId" type="number" min="1" max="4094" placeholder="e.g., 10" />
-        </div>
-        <div>
-          <label>VLAN name (optional)</label>
-          <input id="v4_vlanName" maxlength="32" placeholder="e.g., HR-LAN" />
-        </div>
-        <div>
-          <label>Gateway convention</label>
-          <select id="v4_gatewayPref"><option value="first">Use first usable (.1)</option><option value="last">Use last usable (.254)</option></select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <span class="pill">Tip: Base prefix ≤ desired prefix. For classic /24 labs, use base 24 and desired 26.</span>
-        <span class="pill">RFC1918: 10/8, 172.16/12, 192.168/16</span>
-      </div>
-
-      <div id="v4_outputs" style="display:none;">
-        <div class="kpi">
-          <div class="card">
-            <div><strong>Host bits:</strong> <span id="v4_hostBits"></span></div>
-            <div><strong>Usable hosts:</strong> <span id="v4_usableHosts"></span></div>
-            <div class="sm mono">Usable = 2^hostBits − 2</div>
-          </div>
-          <div class="card">
-            <div><strong>Subnet bits:</strong> <span id="v4_subnetBits"></span></div>
-            <div><strong>Number of subnets:</strong> <span id="v4_numSubnets"></span></div>
-            <div class="sm mono">Subnets = 2^subnetBits</div>
-          </div>
-          <div class="card">
-            <div><strong>Mask:</strong> <span id="v4_maskText" class="mono"></span></div>
-            <div><strong>Wildcard:</strong> <span id="v4_wildcardText" class="mono"></span></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 class="section-title">IP info</h4>
-          <div class="three">
-            <div><strong>IP class:</strong> <span id="v4_ipClass"></span></div>
-            <div><strong>Private/Public:</strong> <span id="v4_ipPriv"></span></div>
-            <div><strong>CIDR:</strong> <span id="v4_cidrText" class="mono"></span></div>
-          </div>
-        </div>
-
-        <div id="v4_warn" class="warn" style="display:none;"></div>
-
-        <div class="card">
-          <h4 class="section-title">Subnet ranges</h4>
-          <table id="v4_rangesTable">
-            <thead><tr><th>#</th><th>Network</th><th>First usable</th><th>Last usable</th><th>Broadcast</th><th>Gateway</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-        <div class="card">
-          <h4 class="section-title">DHCP planning</h4>
-          <div class="grid">
-            <div><strong>Scope size:</strong> <span id="v4_dhcpScope"></span></div>
-            <div><strong>Reservations suggestion:</strong> <span id="v4_dhcpRes"></span></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 class="section-title">ACL helper</h4>
+      <div class="content-area">
+        <!-- IPv4 tab -->
+        <div class="card tabpane" id="ipv4" style="display:block;">
+          <h3 class="section-title">IPv4 Subnetting</h3>
           <div class="grid">
             <div>
-              <label>Subnet mask for ACL wildcard</label>
-              <input id="v4_aclMask" value="255.255.255.192" />
+              <label>Base network (IPv4)</label>
+              <input id="v4_baseNet" value="192.168.0.0" placeholder="e.g., 10.0.0.0" />
+              <div id="v4_baseNetErr" class="error" style="display:none;"></div>
             </div>
             <div>
-              <label>Wildcard mask (ACL)</label>
-              <input id="v4_aclWildcard" readonly />
+              <label>Base prefix</label>
+              <select id="v4_basePrefix"><option>8</option><option>12</option><option>16</option><option selected>24</option></select>
+            </div>
+            <div>
+              <label>Desired prefix</label>
+              <select id="v4_desiredPrefix"><option>25</option><option selected>26</option><option>27</option><option>28</option><option>29</option><option>30</option></select>
+            </div>
+            <div>
+              <label>Host requirement (per subnet)</label>
+              <input id="v4_hostReq" type="number" value="50" min="1" />
+            </div>
+          </div>
+          <div class="three" style="margin-top:12px;">
+            <div>
+              <label>VLAN ID (optional)</label>
+              <input id="v4_vlanId" type="number" min="1" max="4094" placeholder="e.g., 10" />
+            </div>
+            <div>
+              <label>VLAN name (optional)</label>
+              <input id="v4_vlanName" maxlength="32" placeholder="e.g., HR-LAN" />
+            </div>
+            <div>
+              <label>Gateway convention</label>
+              <select id="v4_gatewayPref"><option value="first">Use first usable (.1)</option><option value="last">Use last usable (.254)</option></select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <span class="pill">Tip: Base prefix ≤ desired prefix. For classic /24 labs, use base 24 and desired 26.</span>
+            <span class="pill">RFC1918: 10/8, 172.16/12, 192.168/16</span>
+          </div>
+
+          <div id="v4_outputs" style="display:none;">
+            <div class="kpi">
+              <div class="card">
+                <div><strong>Host bits:</strong> <span id="v4_hostBits"></span></div>
+                <div><strong>Usable hosts:</strong> <span id="v4_usableHosts"></span></div>
+                <div class="sm mono">Usable = 2^hostBits − 2</div>
+              </div>
+              <div class="card">
+                <div><strong>Subnet bits:</strong> <span id="v4_subnetBits"></span></div>
+                <div><strong>Number of subnets:</strong> <span id="v4_numSubnets"></span></div>
+                <div class="sm mono">Subnets = 2^subnetBits</div>
+              </div>
+              <div class="card">
+                <div><strong>Mask:</strong> <span id="v4_maskText" class="mono"></span></div>
+                <div><strong>Wildcard:</strong> <span id="v4_wildcardText" class="mono"></span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4 class="section-title">IP info</h4>
+              <div class="three">
+                <div><strong>IP class:</strong> <span id="v4_ipClass"></span></div>
+                <div><strong>Private/Public:</strong> <span id="v4_ipPriv"></span></div>
+                <div><strong>CIDR:</strong> <span id="v4_cidrText" class="mono"></span></div>
+              </div>
+            </div>
+
+            <div id="v4_warn" class="warn" style="display:none;"></div>
+
+            <div class="card">
+              <h4 class="section-title">Subnet ranges</h4>
+              <table id="v4_rangesTable">
+                <thead><tr><th>#</th><th>Network</th><th>First usable</th><th>Last usable</th><th>Broadcast</th><th>Gateway</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div class="card">
+              <h4 class="section-title">DHCP planning</h4>
+              <div class="grid">
+                <div><strong>Scope size:</strong> <span id="v4_dhcpScope"></span></div>
+                <div><strong>Reservations suggestion:</strong> <span id="v4_dhcpRes"></span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4 class="section-title">ACL helper</h4>
+              <div class="grid">
+                <div>
+                  <label>Subnet mask for ACL wildcard</label>
+                  <input id="v4_aclMask" value="255.255.255.192" />
+                </div>
+                <div>
+                  <label>Wildcard mask (ACL)</label>
+                  <input id="v4_aclWildcard" readonly />
+                </div>
+              </div>
+              <div class="row" style="margin-top:10px;">
+                <button class="btn secondary" onclick="calcAclWildcard()">Generate wildcard</button>
+                <span class="sm mono" id="v4_aclExample"></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h4 class="section-title">VLAN notes</h4>
+              <textarea id="v4_vlanNotes" rows="4" placeholder="Document VLAN purpose, gateway, DHCP scope, ACLs, and inter-VLAN rules here."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- IPv6 tab -->
+        <div class="card tabpane" id="ipv6" style="display:none;">
+          <h3 class="section-title">IPv6 Calculator</h3>
+          <div class="grid">
+            <div>
+              <label>IPv6 network</label>
+              <input id="v6_net" value="2001:db8::" placeholder="e.g., 2001:db8::" />
+              <div id="v6_netErr" class="error"></div>
+            </div>
+            <div>
+              <label>Prefix length</label>
+              <select id="v6_prefix"><option>48</option><option selected>64</option><option>56</option><option>60</option><option>128</option></select>
             </div>
           </div>
           <div class="row" style="margin-top:10px;">
-            <button class="btn secondary" onclick="calcAclWildcard()">Generate wildcard</button>
-            <span class="sm mono" id="v4_aclExample"></span>
+            <button class="btn" onclick="calcIPv6()">Calculate</button>
+            <button class="btn secondary" onclick="copyIPv6()">Copy summary</button>
+          </div>
+          <div id="v6_outputs" style="display:none;">
+            <div class="kpi">
+              <div class="card">
+                <div><strong>Network:</strong> <span id="v6_network" class="mono"></span></div>
+                <div><strong>Prefix:</strong> <span id="v6_prefixOut"></span></div>
+              </div>
+              <div class="card">
+                <div><strong>Full:</strong> <span id="v6_full" class="mono"></span></div>
+                <div><strong>Compressed:</strong> <span id="v6_compressed" class="mono"></span></div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <h4 class="section-title">VLAN notes</h4>
-          <textarea id="v4_vlanNotes" rows="4" placeholder="Document VLAN purpose, gateway, DHCP scope, ACLs, and inter-VLAN rules here."></textarea>
+        <!-- VLSM tab -->
+        <div class="card tabpane" id="vlsm" style="display:none;">
+          <h3 class="section-title">VLSM Planning</h3>
+          <div class="grid">
+            <div>
+              <label>Base network</label>
+              <input id="vlsm_base" value="10.0.0.0" placeholder="e.g., 10.0.0.0" />
+              <div id="vlsm_baseErr" class="error" style="display:none;"></div>
+            </div>
+            <div>
+              <label>Base prefix</label>
+              <select id="vlsm_prefix"><option>8</option><option selected>16</option><option>24</option></select>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <label>Host requirements (comma-separated)</label>
+            <input id="vlsm_hosts" value="100, 50, 25, 10" placeholder="e.g., 100, 50, 25, 10" />
+            <div id="vlsm_hostsErr" class="error" style="display:none;"></div>
+          </div>
+          <div style="margin-top:10px;">
+            <label>Gateway convention</label>
+            <select id="vlsm_gateway"><option value="first">Use first usable (.1)</option><option value="last">Use last usable (.254)</option></select>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn" onclick="calcVLSM()">Calculate</button>
+            <button class="btn secondary" onclick="exportVLSM()">Export CSV</button>
+            <button class="btn alt" onclick="copyVLSM()">Copy plan</button>
+          </div>
+          <div id="vlsm_warn" class="warn" style="display:none;"></div>
+          <div id="vlsm_outputs" style="display:none;">
+            <div class="card">
+              <h4 class="section-title">VLSM allocation table</h4>
+              <table id="vlsm_table">
+                <thead><tr><th>#</th><th>Hosts req.</th><th>Prefix</th><th>Network</th><th>First usable</th><th>Last usable</th><th>Broadcast</th><th>Gateway</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
+        <!-- Supernet tab -->
+        <div class="card tabpane" id="supernet" style="display:none;">
+          <h3 class="section-title">Route Aggregation</h3>
+          <div style="margin-top:12px;">
+            <label>Networks to summarize (CIDR, one per line)</label>
+            <textarea id="agg_list" rows="6" placeholder="e.g.,&#10;192.168.0.0/24&#10;192.168.1.0/24&#10;192.168.2.0/24"></textarea>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn" onclick="calcSupernet()">Summarize</button>
+            <button class="btn secondary" onclick="copySupernet()">Copy</button>
+          </div>
+          <div id="supernet_outputs" style="display:none;">
+            <label>Summary route</label>
+            <textarea id="agg_result" rows="3" readonly></textarea>
+          </div>
+        </div>
+
+        <!-- Binary tab -->
+        <div class="card tabpane" id="binary" style="display:none;">
+          <h3 class="section-title">Binary Visualization</h3>
+          <div class="grid">
+            <div>
+              <label>IP address</label>
+              <input id="bin_ip" value="192.168.1.10" placeholder="e.g., 192.168.1.10" />
+              <div id="bin_ipErr" class="error" style="display:none;"></div>
+            </div>
+            <div>
+              <label>Prefix length</label>
+              <select id="bin_prefix"><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option></select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn" onclick="calcBinary()">Calculate</button>
+            <button class="btn secondary" onclick="copyBinary()">Copy</button>
+          </div>
+          <div id="bin_outputs" style="display:none;">
+            <div class="kpi">
+              <div class="card">
+                <div><strong>Network:</strong> <span id="bin_network" class="mono"></span></div>
+                <div><strong>Mask:</strong> <span id="bin_mask" class="mono"></span></div>
+                <div><strong>Wildcard:</strong> <span id="bin_wc" class="mono"></span></div>
+              </div>
+            </div>
+            <div class="card">
+              <h4 class="section-title">Binary breakdown</h4>
+              <div class="mono" style="font-size:13px; line-height:1.8; word-break:break-all;">
+                <div id="bin_oct1"></div>
+                <div id="bin_oct2"></div>
+                <div id="bin_oct3"></div>
+                <div id="bin_oct4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="main-footer">
+        <div class="footer-content">
+          <p>&copy; 2025 <strong>Network Calculator Suite</strong></p>
+          <p class="footer-tagline">Professional subnetting, routing, and network analysis tools</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>About Network Calculator Suite</h2>
+        <button class="modal-close" aria-label="Close help modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>Quick Start</h3>
+        <p>Select a calculator from the sidebar to begin. Each tool provides instant subnetting, routing, and network visualization.</p>
+        
+        <h3>Tools</h3>
+        <dl>
+          <dt><strong>IPv4</strong></dt>
+          <dd>Classical subnetting with DHCP planning and ACL helper.</dd>
+          <dt><strong>IPv6</strong></dt>
+          <dd>IPv6 address compression and network notation.</dd>
+          <dt><strong>VLSM</strong></dt>
+          <dd>Variable-length subnetting for efficient allocation.</dd>
+          <dt><strong>Supernet</strong></dt>
+          <dd>Route aggregation and summarization.</dd>
+          <dt><strong>Binary</strong></dt>
+          <dd>Bit-level visualization of network/host bits.</dd>
+        </dl>
+
+        <h3>Tips</h3>
+        <ul>
+          <li>Use RFC1918 ranges for lab networks: 10/8, 172.16/12, 192.168/16</li>
+          <li>Base prefix must be ≤ desired prefix for subnetting to work</li>
+          <li>VLSM plans should list host requirements from largest to smallest</li>
+          <li>All results can be copied to clipboard or exported as CSV</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn secondary" id="modal-close-btn">Close</button>
       </div>
     </div>
+  </div>
 
-    <!-- IPv6 tab -->
-    <div class="card tabpane" id="ipv6" style="display:none;">
-      <h3 class="section-title">IPv6 calculator</h3>
-      <div class="grid">
-        <div>
-          <label>IPv6 network</label>
-          <input id="v6_net" value="2001:db8::" placeholder="e.g., 2001:db8::" />
-          <div id="v6_netErr" class="error"></div>
-        </div>
-        <div>
-          <label>Prefix length</label>
-          <select id="v6_prefix"><option>48</option><option selected>64</option><option>56</option><option>60</option><option>128</option></select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <button class="btn" onclick="calcIPv6()">Calculate</button>
-        <button class="btn secondary" onclick="copyIPv6()">Copy summary</button>
-      </div>
-      <div id="v6_outputs" style="display:none;">
-        <div class="kpi">
-          <script src="app.js" defer></script>
-      const hostList = document.getElementById("vlsm_hosts").value.split(",").map(x=>parseInt(x.trim(),10)).filter(x=>!isNaN(x) && x>0).sort((a,b)=>b-a);
-      const gwPref = document.getElementById("vlsm_gateway").value;
-
-      const tbody = document.querySelector("#vlsm_table tbody"); tbody.innerHTML="";
-      const warn = document.getElementById("vlsm_warn"); warn.style.display="none";
-
-      const baseInt = toInt(base);
-      const baseNetInt = (baseInt & maskInt(basePrefix)) >>> 0;
-      let currentNetInt = baseNetInt;
-
-      for (let i=0;i<hostList.length;i++){
-        const h = hostList[i];
-        const pref = smallestPrefixForHosts(h);
-        if (pref < basePrefix) { warn.textContent = `Warning: Host requirement ${h} exceeds base block granularity.`; warn.style.display="block"; }
-        const subnetSize = Math.pow(2, 32 - pref) >>> 0;
-        const networkInt = currentNetInt;
-        const broadcastInt = (networkInt + subnetSize - 1) >>> 0;
-        const firstInt = (networkInt + 1) >>> 0;
-        const lastInt = (broadcastInt - 1) >>> 0;
-        const gw = gwPref === "first" ? octetsToIP(...fromInt(firstInt)) : octetsToIP(...fromInt(lastInt));
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${i+1}</td><td>${h}</td><td>/${pref}</td><td class="mono">${octetsToIP(...fromInt(networkInt))}/${pref}</td><td class="mono">${octetsToIP(...fromInt(firstInt))}</td><td class="mono">${octetsToIP(...fromInt(lastInt))}</td><td class="mono">${octetsToIP(...fromInt(broadcastInt))}</td><td class="mono">${gw}</td>`;
-        tbody.appendChild(tr);
-
-        currentNetInt = (networkInt + subnetSize) >>> 0;
-      }
-      document.getElementById("vlsm_outputs").style.display = "block";
-    }
-    function exportVLSM(){
-      const rows = [["#", "Hosts req.", "Prefix", "Network", "First usable", "Last usable", "Broadcast", "Gateway"]];
-      document.querySelectorAll("#vlsm_table tbody tr").forEach(tr => { rows.push(Array.from(tr.children).map(td => td.textContent)); });
-      const csv = rows.map(r => r.join(",")).join("\n");
-      const blob = new Blob([csv], {type: "text/csv"}); const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "vlsm-plan.csv"; a.click(); URL.revokeObjectURL(url);
-    }
-    function copyVLSM(){
-      const lines = ["VLSM Plan","#,Hosts,Prefix,Network,First,Last,Broadcast,Gateway"];
-      document.querySelectorAll("#vlsm_table tbody tr").forEach(tr => { lines.push(Array.from(tr.children).map(td => td.textContent).join(",")); });
-      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied VLSM plan."));
-    }
-
-    // ---------- Supernetting ----------
-    function parseCIDR(cidr){
-      const [ip, prefStr] = cidr.split("/");
-      const prefix = parseInt(prefStr,10);
-      return { ip: ipToOctets(ip), prefix };
-    }
-    function toInt([a,b,c,d]){ return ((a<<24)>>>0) + (b<<16) + (c<<8) + d; }
-    function fromInt(n){ return [ (n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255 ]; }
-    function maskInt(prefix){ return prefix===0 ? 0 : ((0xFFFFFFFF << (32 - prefix)) >>> 0); }
-    function calcSupernet(){
-      const lines = document.getElementById("agg_list").value.split("\n").map(l=>l.trim()).filter(Boolean);
-      if (lines.length === 0) { alert("Add networks first."); return; }
-      const nets = lines.map(parseCIDR).sort((a,b)=> toInt(a.ip) - toInt(b.ip) || a.prefix - b.prefix);
-      // Verify contiguity and find summary prefix by common bits
-      const first = nets[0], last = nets[nets.length-1];
-      const firstInt = toInt(first.ip), lastInt = toInt(last.ip);
-      let common = 0;
-      for (let i=31;i>=0;i--){
-        const bitF = (firstInt >>> i) & 1;
-        const bitL = (lastInt >>> i) & 1;
-        if (bitF === bitL) common++;
-        else break;
-      }
-      const summaryPrefix = common;
-      const summaryMask = maskInt(summaryPrefix);
-      const summaryNetInt = firstInt & summaryMask;
-      const summaryNet = fromInt(summaryNetInt);
-      const result = `${octetsToIP(...summaryNet)}/${summaryPrefix}`;
-      document.getElementById("agg_result").value = result + "\n(Note: ensure inputs are contiguous blocks for accurate summarization.)";
-    }
-    function copySupernet(){
-      const t = document.getElementById("agg_result").value;
-      if (!t) { alert("Summarize first."); return; }
-      navigator.clipboard.writeText(t).then(()=> alert("Copied summary route."));
-    }
-
-    // ---------- Binary view ----------
-    function bitsOfOctet(n){ return n.toString(2).padStart(8,"0"); }
-    function calcBinary(){
-      let ip, prefix;
-      try { ip = ipToOctets(document.getElementById("bin_ip").value); } catch(e){ alert(e.message); return; }
-      prefix = parseInt(document.getElementById("bin_prefix").value,10);
-
-      const mask = maskFromPrefix(prefix);
-      const wc = wildcardFromMask(mask);
-
-      // Compute network address by zeroing host bits
-      const ipInt = toInt(ip);
-      const maskI = maskInt(prefix);
-      const netInt = ipInt & maskI;
-      const net = fromInt(netInt);
-
-      document.getElementById("bin_mask").textContent = mask;
-      document.getElementById("bin_wc").textContent = wc;
-      document.getElementById("bin_network").textContent = octetsToIP(...net) + "/" + prefix;
-
-      const bits = ip.map(bitsOfOctet);
-      const maskBits = fromInt(maskI).map(bitsOfOctet);
-      function decorate(octBits, maskOctBits){
-        let out = "";
-        for (let i=0;i<8;i++){
-          const m = maskOctBits[i] === "1";
-          out += m ? `<span class="netbit">${octBits[i]}</span>` : `<span class="hostbit">${octBits[i]}</span>`;
-        }
-        return out;
-      }
-      document.getElementById("bin_oct1").innerHTML = `Octet 1: ${decorate(bits[0], maskBits[0])}`;
-      document.getElementById("bin_oct2").innerHTML = `Octet 2: ${decorate(bits[1], maskBits[1])}`;
-      document.getElementById("bin_oct3").innerHTML = `Octet 3: ${decorate(bits[2], maskBits[2])}`;
-      document.getElementById("bin_oct4").innerHTML = `Octet 4: ${decorate(bits[3], maskBits[3])}`;
-      document.getElementById("bin_outputs").style.display = "block";
-    }
-    function copyBinary(){
-      const lines = [];
-      lines.push("Binary View:");
-      lines.push("Mask: " + document.getElementById("bin_mask").textContent);
-      lines.push("Wildcard: " + document.getElementById("bin_wc").textContent);
-      lines.push("Network: " + document.getElementById("bin_network").textContent);
-      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied binary summary."));
-    }
-
-
-
-    // Set dynamic copyright year in footer
-    try {
-      const yel = document.getElementById('copyrightYear');
-      if (yel) yel.textContent = new Date().getFullYear();
-    } catch(e) { /* noop */ }
-  </script>
+  <script src="app.js" defer></script>
 </body>
 </html>
