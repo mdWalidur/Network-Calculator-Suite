@@ -786,6 +786,7 @@ Suggested gateway (subnet 1): ${gatewayPref === "first" ? ranges[0].first : rang
     const AI_API_KEY = 'AIzaSyD6WRlb5QqFmRDnvNSD_T6nWP8EPrhfIUc';
 
     async function askAI(){
+      // Call local proxy at /api/ai instead of calling Google directly from browser
       const btn = document.getElementById('ai_ask');
       const respEl = document.getElementById('ai_response');
       const prompt = document.getElementById('ai_prompt').value.trim();
@@ -793,25 +794,15 @@ Suggested gateway (subnet 1): ${gatewayPref === "first" ? ranges[0].first : rang
       btn.disabled = true; btn.textContent = 'Thinking...';
       respEl.style.display = 'block'; respEl.textContent = 'Thinking...';
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=${AI_API_KEY}`;
-        const body = { prompt: { text: prompt }, temperature: 0.2, maxOutputTokens: 512 };
-        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(res.status + ' ' + errText);
-        }
+        const res = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
         const data = await res.json();
-        let out = '';
-        if (data.candidates && data.candidates.length) {
-          out = data.candidates.map(c => c.output || c.content || JSON.stringify(c)).join('\n\n');
-        } else if (data.output && data.output.length) {
-          out = data.output.map(o => o.content || JSON.stringify(o)).join('\n\n');
+        if (!res.ok) {
+          respEl.textContent = 'Error: ' + (data.error && typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
         } else {
-          out = JSON.stringify(data, null, 2);
+          respEl.textContent = data.text || JSON.stringify(data.raw || data, null, 2);
         }
-        respEl.textContent = out;
       } catch(err){
-        respEl.textContent = 'Error: ' + err.message;
+        respEl.textContent = 'Network error: ' + err.message;
       } finally {
         btn.disabled = false; btn.textContent = 'Ask AI';
       }
