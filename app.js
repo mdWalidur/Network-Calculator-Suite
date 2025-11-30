@@ -411,6 +411,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalBody = document.querySelector(".modal-body");
   let htmlRef = document.documentElement;
 
+  // Theme management functions
+  function setTheme(theme) {
+    if (theme === "light") {
+      htmlRef.classList.add("light-theme");
+      localStorage.setItem("theme", "light");
+    } else {
+      htmlRef.classList.remove("light-theme");
+      localStorage.setItem("theme", "dark");
+    }
+  }
+
+  function getTheme() {
+    return localStorage.getItem("theme") || "dark";
+  }
+
+  function toggleTheme() {
+    const currentTheme = htmlRef.classList.contains("light-theme") ? "light" : "dark";
+    setTheme(currentTheme === "light" ? "dark" : "light");
+  }
+
+  // Initialize theme from localStorage
+  const savedTheme = getTheme();
+  if (savedTheme === "light") {
+    htmlRef.classList.add("light-theme");
+  }
+
+  // Header theme toggle button
+  const headerThemeToggle = document.getElementById("themeToggle");
+  if (headerThemeToggle) {
+    headerThemeToggle.addEventListener("click", toggleTheme);
+  }
+
   // Toggle settings dropdown
   settingsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -429,27 +461,52 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function showSettings() {
+    const isLight = htmlRef.classList.contains("light-theme");
     modalHeader.innerHTML = "<h2>Settings</h2>";
     modalBody.innerHTML = `
       <div class="settings-panel">
         <div class="setting-group">
-          <label>Theme</label>
-          <button id="themeToggleLarge" class="btn">Switch to Light Mode</button>
+          <label>Theme Preferences</label>
+          <p class="setting-description">Choose your preferred color scheme for the calculator interface.</p>
+          <div class="theme-options">
+            <button id="themeDark" class="theme-btn ${!isLight ? 'active' : ''}">
+              <span class="theme-icon">🌙</span>
+              <span class="theme-name">Dark Mode</span>
+              <span class="theme-desc">Low-light viewing</span>
+            </button>
+            <button id="themeLight" class="theme-btn ${isLight ? 'active' : ''}">
+              <span class="theme-icon">☀️</span>
+              <span class="theme-name">Light Mode</span>
+              <span class="theme-desc">Bright & clear</span>
+            </button>
+          </div>
         </div>
         <div class="setting-group">
           <label>Display Options</label>
-          <p>More settings coming soon...</p>
+          <p class="setting-description">Additional customization options will be available in future updates.</p>
+          <div class="coming-soon-badge">Coming Soon</div>
         </div>
       </div>
     `;
     backdrop.classList.add("show");
-    const themeToggleLarge = document.getElementById("themeToggleLarge");
-    if (themeToggleLarge) {
-      const isLight = htmlRef.classList.contains("light-theme");
-      themeToggleLarge.textContent = isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
-      themeToggleLarge.addEventListener("click", () => {
-        setTheme(isLight ? "dark" : "light");
-        themeToggleLarge.textContent = !isLight ? "Switch to Dark Mode" : "Switch to Light Mode";
+    
+    // Theme toggle buttons
+    const themeDarkBtn = document.getElementById("themeDark");
+    const themeLightBtn = document.getElementById("themeLight");
+    
+    if (themeDarkBtn) {
+      themeDarkBtn.addEventListener("click", () => {
+        setTheme("dark");
+        themeDarkBtn.classList.add("active");
+        themeLightBtn.classList.remove("active");
+      });
+    }
+    
+    if (themeLightBtn) {
+      themeLightBtn.addEventListener("click", () => {
+        setTheme("light");
+        themeLightBtn.classList.add("active");
+        themeDarkBtn.classList.remove("active");
       });
     }
   }
