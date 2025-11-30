@@ -369,3 +369,20 @@
     padding: 12px;
   }
 }
+
+/* Logo sizing: keep logo small inside sidebar */
+.logo-mark {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-mark img {
+  width: 48px;
+  height: auto;
+  display: block;
+}
+

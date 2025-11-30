@@ -5,20 +5,20 @@
       <stop offset="100%" style="stop-color:#4a9eff;stop-opacity:1" />
     </linearGradient>
   </defs>
-  
-  <!-- Background circle -->
-  <circle cx="100" cy="100" r="95" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.3"/>
-  
-  <!-- Network nodes -->
-  <circle cx="60" cy="50" r="8" fill="#d4af37"/>
-  <circle cx="140" cy="50" r="8" fill="#4a9eff"/>
-  <circle cx="100" cy="120" r="8" fill="#d4af37"/>
-  
+
+  <!-- Subtle halo (smaller) -->
+  <circle cx="100" cy="100" r="64" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.18"/>
+
+  <!-- Network nodes (tighter layout) -->
+  <circle cx="78" cy="78" r="6" fill="#d4af37"/>
+  <circle cx="122" cy="78" r="6" fill="#4a9eff"/>
+  <circle cx="100" cy="110" r="6" fill="#d4af37"/>
+
   <!-- Network connections -->
-  <line x1="60" y1="50" x2="100" y2="120" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.6"/>
-  <line x1="140" y1="50" x2="100" y2="120" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.6"/>
-  <line x1="60" y1="50" x2="140" y2="50" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.6"/>
-  
-  <!-- WR monogram -->
-  <text x="100" y="165" font-family="Inter, sans-serif" font-size="36" font-weight="700" text-anchor="middle" fill="url(#logoGradient)">WR</text>
+  <line x1="78" y1="78" x2="100" y2="110" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.7" stroke-linecap="round"/>
+  <line x1="122" y1="78" x2="100" y2="110" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.7" stroke-linecap="round"/>
+  <line x1="78" y1="78" x2="122" y2="78" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.65" stroke-linecap="round"/>
+
+  <!-- WR monogram (smaller, centered above bottom) -->
+  <text x="100" y="146" font-family="Inter, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="url(#logoGradient)">WR</text>
 </svg>
