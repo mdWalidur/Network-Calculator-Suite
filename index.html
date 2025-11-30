@@ -12,77 +12,7 @@
   <link rel="icon" href="logo.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="logo.svg" />
   <link rel="apple-touch-icon" href="logo.svg" />
-  <style>
-    /* Futuristic dark + neon glass theme (mobile-first) */
-    :root{
-      --bg: #030617;
-      --panel: rgba(255,255,255,0.04);
-      --glass: rgba(255,255,255,0.03);
-      --border: rgba(255,255,255,0.06);
-      --muted: #9aa7b2;
-      --text: #e6f0ff;
-      --neon-blue: #3ee0ff;
-      --neon-green: #7cffb2;
-      --accent: var(--neon-blue);
-      --accent-2: var(--neon-green);
-      --radius: 14px;
-      --glass-blur: 8px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:linear-gradient(180deg,#01040a 0%,#041022 60%);color:var(--text);font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-    .container{max-width:1180px;margin:28px auto;padding:18px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-green));display:flex;align-items:center;justify-content:center;color:#001020;font-weight:800;font-size:20px;box-shadow:0 8px 30px rgba(62,224,255,0.06),0 2px 8px rgba(124,255,178,0.04)}
-    h1{margin:0;font-size:20px;font-weight:800;letter-spacing:0.6px}
-    .subtitle{color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:10px;align-items:center}
-    .btn{background:linear-gradient(90deg,var(--neon-blue),#63f0ff);color:#011; border:none;padding:10px 16px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(62,224,255,0.08);transition:transform .18s ease,box-shadow .18s ease}
-    .btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(62,224,255,0.16)}
-    .btn:active{transform:translateY(0)}
-    .btn.secondary{background:linear-gradient(90deg,var(--neon-green),#9affc9);box-shadow:0 6px 20px rgba(124,255,178,0.06)}
-    .btn.alt{background:linear-gradient(90deg,#ffd166,#ffb86b);color:#071018}
-    .tabs{display:flex;gap:10px;margin-top:12px;overflow:auto}
-    .tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--border);color:var(--muted);font-weight:700;cursor:pointer;backdrop-filter: blur(6px);}
-    .tab .icon{width:18px;height:18px;display:inline-block;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6))}
-    .tab.active{color:var(--text);box-shadow:0 8px 30px rgba(62,224,255,0.04),inset 0 0 18px rgba(62,224,255,0.03);border-color:rgba(62,224,255,0.14)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:14px;backdrop-filter: blur(var(--glass-blur));}
-    .section-title{font-size:16px;margin:0 0 10px 0;font-weight:800}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    label{display:block;font-weight:700;margin-bottom:6px;color:var(--muted);font-size:13px}
-    input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);color:var(--text);font-size:14px;outline:none}
-    input:focus,select:focus,textarea:focus{box-shadow:0 6px 24px rgba(62,224,255,0.06);border-color:rgba(62,224,255,0.18)}
-    table{width:100%;border-collapse:collapse;margin-top:8px;color:var(--text)}
-    th,td{border-bottom:1px solid rgba(255,255,255,0.03);padding:10px;text-align:left}
-    th{color:var(--muted);font-weight:700}
-    .kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px}
-    .kpi .card{padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.02)}
-    .pill{display:inline-block;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);color:var(--muted);background:transparent;font-size:12px}
-    .mono{font-family:var(--mono)}
-    .warn{background:linear-gradient(90deg,rgba(255,200,100,0.06),rgba(255,200,100,0.03));color:#ffd89b;border:1px solid rgba(255,200,100,0.06);padding:10px;border-radius:10px}
-    footer{margin:22px 0;text-align:center;color:var(--muted);font-size:13px}
-    .small-muted{color:var(--muted);font-size:12px}
-    .icon-chip{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,rgba(62,224,255,0.06),rgba(124,255,178,0.04));display:inline-flex;align-items:center;justify-content:center}
-    /* Animated floating glow for logo */
-    @keyframes neonPulse{0%{box-shadow:0 6px 18px rgba(62,224,255,0.06)}50%{box-shadow:0 12px 40px rgba(62,224,255,0.12)}100%{box-shadow:0 6px 18px rgba(62,224,255,0.06)}}
-    .logo{animation:neonPulse 3.6s ease-in-out infinite}
-    .btn{transition:transform .18s ease,box-shadow .18s ease,opacity .18s}
-    /* small screens */
-    @media (max-width:880px){
-      .grid{grid-template-columns:1fr}
-      .three{grid-template-columns:1fr}
-      .kpi{grid-template-columns:1fr}
-      header{flex-direction:column;align-items:flex-start;gap:10px}
-      .actions{width:100%;display:flex}
-      .btn{flex:1}
-      .tab{padding:8px 10px}
-    }
-    /* subtle transitions */
-    *{transition:background-color .18s, color .18s, border-color .18s}
-</head>
+  <link rel="stylesheet" href="styles.css">
 <body>
   <div class="container">
     <header>
@@ -239,6 +169,7 @@
         <div>
           <label>IPv6 network</label>
           <input id="v6_net" value="2001:db8::" placeholder="e.g., 2001:db8::" />
+          <div id="v6_netErr" class="error"></div>
         </div>
         <div>
           <label>Prefix length</label>
@@ -274,6 +205,7 @@
         <div>
           <label>Base network (IPv4)</label>
           <input id="vlsm_base" value="192.168.1.0" />
+            <div id="vlsm_baseErr" class="error"></div>
         </div>
         <div>
           <label>Base prefix</label>
@@ -282,6 +214,7 @@
         <div>
           <label>Host requirements (comma-separated)</label>
           <input id="vlsm_hosts" value="50,20,10" placeholder="e.g., 50,20,10,5" />
+          <div id="vlsm_hostsErr" class="error"></div>
         </div>
         <div>
           <label>Gateway convention</label>
@@ -331,6 +264,7 @@
         <div>
           <label>IPv4 address</label>
           <input id="bin_ip" value="192.168.0.65" />
+          <div id="bin_ipErr" class="error"></div>
         </div>
         <div>
           <label>Prefix</label>
@@ -363,27 +297,17 @@
     </footer>
   </div>
 
-  <script>
-    // ---------- General UI ----------
-    document.querySelectorAll(".tab").forEach(t => {
-      t.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-        document.querySelectorAll(".tabpane").forEach(p => p.style.display = "none");
-        t.classList.add("active");
-        document.getElementById(t.dataset.tab).style.display = "block";
-      });
-    });
-    function activeCalc(){
-      const active = document.querySelector(".tab.active").dataset.tab;
-      if (active === "ipv4") return { calculate: calculateIPv4, export: exportIPv4, copy: copyIPv4 };
-      if (active === "ipv6") return { calculate: calcIPv6, export: ()=>{}, copy: copyIPv6 };
-      if (active === "vlsm") return { calculate: calcVLSM, export: exportVLSM, copy: copyVLSM };
-      if (active === "supernet") return { calculate: calcSupernet, export: ()=>{}, copy: copySupernet };
-      if (active === "binary") return { calculate: calcBinary, export: ()=>{}, copy: copyBinary };
-      return { calculate: ()=>{}, export: ()=>{}, copy: ()=>{} };
-    }
+  <!-- Floating help button and modal -->
+  <button id="helpBtn" aria-label="Help">Help</button>
+  <div id="helpBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <h3 id="helpTitle">Quick help</h3>
+      <p>Use the tabs to switch calculators. Enter network values and choose prefixes, then click <strong>Calculate</strong>. Use Export CSV or Copy summary for reports.</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button class="close" id="helpClose">Close</button></div>
+    </div>
+  </div>
 
-    // ---------- IPv4 utilities ----------
+  <script src="app.js" defer></script>
     function ipToOctets(ip) {
       const parts = ip.trim().split(".");
       if (parts.length !== 4) throw new Error("Invalid IPv4 format");

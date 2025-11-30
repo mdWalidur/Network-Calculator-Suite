@@ -1,7 +1,12 @@
 {
 {
   "name": "network-calculator-suite",
-  "version": "1.0.0",
-  "description": "Network Calculator Suite (AI proxy removed)",
-  "private": true
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
 }
