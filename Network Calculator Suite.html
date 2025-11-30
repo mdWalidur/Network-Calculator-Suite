@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta charset="UTF-8" />
+  <title>Network Calculator Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="logo.svg" />
+  <link rel="apple-touch-icon" href="logo.svg" />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #1f2937;
+      --accent: #2563eb;
+      --accent-2: #059669;
+      --accent-3: #f59e0b;
+      --warn-bg: #3f2d00;
+      --warn-text: #fbbf24;
+      --error: #ef4444;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: linear-gradient(180deg, #0b1220 0%, #0a1021 100%); color: var(--text); font-family: Segoe UI, Arial, sans-serif; }
+    .container { max-width: 1180px; margin: 24px auto; padding: 0 16px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 48px; height: 48px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); box-shadow: 0 6px 18px rgba(2,6,23,0.6); }
+    .logo svg { width: 30px; height: 30px; display: block; }
+    .copyright { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
+    .subtitle { color: var(--muted); font-size: 14px; }
+    .tabs { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .tab { background: #0b1220; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+    .tab.active { background: var(--accent); border-color: var(--accent); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 12px; }
+    .three { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 12px; }
+    .four { display: grid; grid-template-columns: repeat(4, minmax(200px, 1fr)); gap: 12px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: #0b1220; color: var(--text);
+    }
+    input::placeholder, textarea::placeholder { color: #64748b; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn { background: var(--accent); color: white; border: none; border-radius: 10px; padding: 10px 14px; cursor: pointer; font-weight: 600; }
+    .btn.secondary { background: var(--accent-2); }
+    .btn.alt { background: var(--accent-3); color: black; }
+    .btn:active { transform: translateY(1px); }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border: 1px solid var(--border); padding: 8px; text-align: left; }
+    th { background: #0d1a33; color: var(--text); position: sticky; top: 0; }
+    .mono { font-family: var(--mono); }
+    .warn { background: var(--warn-bg); color: var(--warn-text); border: 1px solid #8b5cf6; padding: 10px; border-radius: 10px; margin-top: 10px; }
+    .error { color: var(--error); font-weight: 600; margin-top: 6px; }
+    footer { margin: 20px 0; text-align: center; color: var(--muted); font-size: 12px; }
+    .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); background: #0b1220; margin-right: 8px; }
+    .kpi { display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+    .kpi .card { padding: 12px; }
+    .section-title { margin-top: 0; font-size: 18px; }
+    .bits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .bitbox { background: #0b1220; border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
+    .netbit { color: #60a5fa; } .hostbit { color: #fca5a5; } .subbit { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="false" title="Network Calculator">
+          <img src="logo.svg" alt="Network Calculator logo" width="40" height="40" style="display:block;" />
+        </div>
+        <div>
+          <h1>Network calculator suite</h1>
+          <div class="subtitle">IPv4, IPv6, VLSM, Supernetting, and Binary view — fast, practical, and report-ready.</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" onclick="activeCalc().calculate()">Calculate</button>
+        <button class="btn secondary" onclick="activeCalc().export()">Export CSV</button>
+        <button class="btn alt" onclick="activeCalc().copy()">Copy summary</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="ipv4">IPv4</div>
+      <div class="tab" data-tab="ipv6">IPv6</div>
+      <div class="tab" data-tab="vlsm">VLSM</div>
+      <div class="tab" data-tab="supernet">Supernet</div>
+      <div class="tab" data-tab="binary">Binary view</div>
+    </div>
+
+    <!-- IPv4 tab -->
+    <div class="card tabpane" id="ipv4" style="display:block;">
+      <h3 class="section-title">IPv4 subnetting</h3>
+      <div class="grid">
+        <div>
+          <label>Base network (IPv4)</label>
+          <input id="v4_baseNet" value="192.168.0.0" placeholder="e.g., 10.0.0.0" />
+          <div id="v4_baseNetErr" class="error" style="display:none;"></div>
+        </div>
+        <div>
+          <label>Base prefix</label>
+          <select id="v4_basePrefix"><option>8</option><option>12</option><option>16</option><option selected>24</option></select>
+        </div>
+        <div>
+          <label>Desired prefix</label>
+          <select id="v4_desiredPrefix"><option>25</option><option selected>26</option><option>27</option><option>28</option><option>29</option><option>30</option></select>
+        </div>
+        <div>
+          <label>Host requirement (per subnet)</label>
+          <input id="v4_hostReq" type="number" value="50" min="1" />
+        </div>
+      </div>
+      <div class="three" style="margin-top:12px;">
+        <div>
+          <label>VLAN ID (optional)</label>
+          <input id="v4_vlanId" type="number" min="1" max="4094" placeholder="e.g., 10" />
+        </div>
+        <div>
+          <label>VLAN name (optional)</label>
+          <input id="v4_vlanName" maxlength="32" placeholder="e.g., HR-LAN" />
+        </div>
+        <div>
+          <label>Gateway convention</label>
+          <select id="v4_gatewayPref"><option value="first">Use first usable (.1)</option><option value="last">Use last usable (.254)</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <span class="pill">Tip: Base prefix ≤ desired prefix. For classic /24 labs, use base 24 and desired 26.</span>
+        <span class="pill">RFC1918: 10/8, 172.16/12, 192.168/16</span>
+      </div>
+
+      <div id="v4_outputs" style="display:none;">
+        <div class="kpi">
+          <div class="card">
+            <div><strong>Host bits:</strong> <span id="v4_hostBits"></span></div>
+            <div><strong>Usable hosts:</strong> <span id="v4_usableHosts"></span></div>
+            <div class="sm mono">Usable = 2^hostBits − 2</div>
+          </div>
+          <div class="card">
+            <div><strong>Subnet bits:</strong> <span id="v4_subnetBits"></span></div>
+            <div><strong>Number of subnets:</strong> <span id="v4_numSubnets"></span></div>
+            <div class="sm mono">Subnets = 2^subnetBits</div>
+          </div>
+          <div class="card">
+            <div><strong>Mask:</strong> <span id="v4_maskText" class="mono"></span></div>
+            <div><strong>Wildcard:</strong> <span id="v4_wildcardText" class="mono"></span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 class="section-title">IP info</h4>
+          <div class="three">
+            <div><strong>IP class:</strong> <span id="v4_ipClass"></span></div>
+            <div><strong>Private/Public:</strong> <span id="v4_ipPriv"></span></div>
+            <div><strong>CIDR:</strong> <span id="v4_cidrText" class="mono"></span></div>
+          </div>
+        </div>
+
+        <div id="v4_warn" class="warn" style="display:none;"></div>
+
+        <div class="card">
+          <h4 class="section-title">Subnet ranges</h4>
+          <table id="v4_rangesTable">
+            <thead><tr><th>#</th><th>Network</th><th>First usable</th><th>Last usable</th><th>Broadcast</th><th>Gateway</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h4 class="section-title">DHCP planning</h4>
+          <div class="grid">
+            <div><strong>Scope size:</strong> <span id="v4_dhcpScope"></span></div>
+            <div><strong>Reservations suggestion:</strong> <span id="v4_dhcpRes"></span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 class="section-title">ACL helper</h4>
+          <div class="grid">
+            <div>
+              <label>Subnet mask for ACL wildcard</label>
+              <input id="v4_aclMask" value="255.255.255.192" />
+            </div>
+            <div>
+              <label>Wildcard mask (ACL)</label>
+              <input id="v4_aclWildcard" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn secondary" onclick="calcAclWildcard()">Generate wildcard</button>
+            <span class="sm mono" id="v4_aclExample"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4 class="section-title">VLAN notes</h4>
+          <textarea id="v4_vlanNotes" rows="4" placeholder="Document VLAN purpose, gateway, DHCP scope, ACLs, and inter-VLAN rules here."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- IPv6 tab -->
+    <div class="card tabpane" id="ipv6" style="display:none;">
+      <h3 class="section-title">IPv6 calculator</h3>
+      <div class="grid">
+        <div>
+          <label>IPv6 network</label>
+          <input id="v6_net" value="2001:db8::" placeholder="e.g., 2001:db8::" />
+        </div>
+        <div>
+          <label>Prefix length</label>
+          <select id="v6_prefix"><option>48</option><option selected>64</option><option>56</option><option>60</option><option>128</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="calcIPv6()">Calculate</button>
+        <button class="btn secondary" onclick="copyIPv6()">Copy summary</button>
+      </div>
+      <div id="v6_outputs" style="display:none;">
+        <div class="kpi">
+          <div class="card">
+            <div><strong>Hosts per subnet:</strong> <span id="v6_hosts"></span></div>
+            <div class="sm mono">Hosts = 2^(128 − prefix)</div>
+          </div>
+          <div class="card">
+            <div><strong>Type:</strong> <span id="v6_type"></span></div>
+            <div class="sm">Global, unique-local (fc00::/7), or link-local (fe80::/10)</div>
+          </div>
+          <div class="card">
+            <div><strong>Compressed:</strong> <span id="v6_short" class="mono"></span></div>
+            <div><strong>Expanded:</strong> <span id="v6_long" class="mono"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VLSM tab -->
+    <div class="card tabpane" id="vlsm" style="display:none;">
+      <h3 class="section-title">VLSM planner</h3>
+      <div class="grid">
+        <div>
+          <label>Base network (IPv4)</label>
+          <input id="vlsm_base" value="192.168.1.0" />
+        </div>
+        <div>
+          <label>Base prefix</label>
+          <select id="vlsm_prefix"><option selected>24</option><option>23</option><option>22</option></select>
+        </div>
+        <div>
+          <label>Host requirements (comma-separated)</label>
+          <input id="vlsm_hosts" value="50,20,10" placeholder="e.g., 50,20,10,5" />
+        </div>
+        <div>
+          <label>Gateway convention</label>
+          <select id="vlsm_gateway"><option value="first">First usable</option><option value="last">Last usable</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="calcVLSM()">Calculate</button>
+        <button class="btn secondary" onclick="exportVLSM()">Export CSV</button>
+        <button class="btn alt" onclick="copyVLSM()">Copy summary</button>
+      </div>
+
+      <div id="vlsm_outputs" style="display:none;">
+        <div id="vlsm_warn" class="warn" style="display:none;"></div>
+        <table id="vlsm_table">
+          <thead><tr><th>#</th><th>Hosts req.</th><th>Prefix</th><th>Network</th><th>First usable</th><th>Last usable</th><th>Broadcast</th><th>Gateway</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Supernet tab -->
+    <div class="card tabpane" id="supernet" style="display:none;">
+      <h3 class="section-title">Supernetting / Route aggregation</h3>
+      <div class="grid">
+        <div>
+          <label>Networks (CIDR, one per line)</label>
+          <textarea id="agg_list" rows="6" placeholder="e.g.
+192.168.0.0/25
+192.168.0.128/25"></textarea>
+        </div>
+        <div>
+          <label>Result</label>
+          <textarea id="agg_result" rows="6" readonly></textarea>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="calcSupernet()">Summarize</button>
+        <button class="btn secondary" onclick="copySupernet()">Copy result</button>
+      </div>
+    </div>
+
+    <!-- Binary view tab -->
+    <div class="card tabpane" id="binary" style="display:none;">
+      <h3 class="section-title">Binary view</h3>
+      <div class="grid">
+        <div>
+          <label>IPv4 address</label>
+          <input id="bin_ip" value="192.168.0.65" />
+        </div>
+        <div>
+          <label>Prefix</label>
+          <select id="bin_prefix"><option>24</option><option selected>26</option><option>27</option><option>28</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="calcBinary()">Show bits</button>
+        <button class="btn secondary" onclick="copyBinary()">Copy summary</button>
+      </div>
+      <div id="bin_outputs" style="display:none;">
+        <div class="kpi">
+          <div class="card"><strong>Mask:</strong> <span id="bin_mask" class="mono"></span></div>
+          <div class="card"><strong>Wildcard:</strong> <span id="bin_wc" class="mono"></span></div>
+          <div class="card"><strong>Network:</strong> <span id="bin_network" class="mono"></span></div>
+        </div>
+        <div class="bits">
+          <div class="bitbox mono" id="bin_oct1"></div>
+          <div class="bitbox mono" id="bin_oct2"></div>
+          <div class="bitbox mono" id="bin_oct3"></div>
+          <div class="bitbox mono" id="bin_oct4"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>Built for labs and operations: fast calculations, clean documentation, and practical helpers.</div>
+      <div class="copyright">&copy; <span id="copyrightYear"></span> Network Calculator Suite — All rights reserved.</div>
+    </footer>
+  </div>
+
+  <script>
+    // ---------- General UI ----------
+    document.querySelectorAll(".tab").forEach(t => {
+      t.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+        document.querySelectorAll(".tabpane").forEach(p => p.style.display = "none");
+        t.classList.add("active");
+        document.getElementById(t.dataset.tab).style.display = "block";
+      });
+    });
+    function activeCalc(){
+      const active = document.querySelector(".tab.active").dataset.tab;
+      if (active === "ipv4") return { calculate: calculateIPv4, export: exportIPv4, copy: copyIPv4 };
+      if (active === "ipv6") return { calculate: calcIPv6, export: ()=>{}, copy: copyIPv6 };
+      if (active === "vlsm") return { calculate: calcVLSM, export: exportVLSM, copy: copyVLSM };
+      if (active === "supernet") return { calculate: calcSupernet, export: ()=>{}, copy: copySupernet };
+      if (active === "binary") return { calculate: calcBinary, export: ()=>{}, copy: copyBinary };
+      return { calculate: ()=>{}, export: ()=>{}, copy: ()=>{} };
+    }
+
+    // ---------- IPv4 utilities ----------
+    function ipToOctets(ip) {
+      const parts = ip.trim().split(".");
+      if (parts.length !== 4) throw new Error("Invalid IPv4 format");
+      const vals = parts.map(p => {
+        if (!/^\d+$/.test(p)) throw new Error("IPv4 must be numeric octets");
+        const v = parseInt(p, 10);
+        if (v < 0 || v > 255) throw new Error("Octets must be 0–255");
+        return v;
+      });
+      return vals;
+    }
+    function octetsToIP(a,b,c,d){ return [a,b,c,d].join("."); }
+    function maskFromPrefix(prefix){
+      const bits = Array(32).fill(0).map((_,i)=> i < prefix ? 1 : 0);
+      const octets = [0,0,0,0];
+      for(let i=0;i<4;i++){
+        let val = 0;
+        for(let j=0;j<8;j++){ val = (val << 1) | bits[i*8 + j]; }
+        octets[i] = val;
+      }
+      return octetsToIP(...octets);
+    }
+    function wildcardFromMask(mask) {
+      const [a,b,c,d] = ipToOctets(mask);
+      return octetsToIP(255-a, 255-b, 255-c, 255-d);
+    }
+    function classOfIP([a]) {
+      if (a >= 1 && a <= 126) return "Class A";
+      if (a === 127) return "Loopback";
+      if (a >= 128 && a <= 191) return "Class B";
+      if (a >= 192 && a <= 223) return "Class C";
+      if (a >= 224 && a <= 239) return "Multicast (D)";
+      if (a >= 240) return "Experimental (E)";
+      return "Unknown";
+    }
+    function isPrivateIP([a,b]) {
+      if (a === 10) return true;
+      if (a === 172 && b >= 16 && b <= 31) return true;
+      if (a === 192 && b === 168) return true;
+      return false;
+    }
+    function blockInfo(prefix){
+      const octetIndex = Math.floor((prefix - 1) / 8); // 0..3
+      const fixedBitsBefore = octetIndex * 8;
+      const bitsIntoOctet = prefix - fixedBitsBefore; // 1..8
+      const block = Math.pow(2, 8 - bitsIntoOctet);
+      return { block, octetIndex };
+    }
+    function addToIP([a,b,c,d], octetIndex, step){
+      const ip = [a,b,c,d];
+      ip[octetIndex] += step;
+      for(let i=octetIndex; i>0; i--){
+        while(ip[i] > 255){
+          const overflow = Math.floor(ip[i] / 256);
+          ip[i] = ip[i] % 256;
+          ip[i-1] += overflow;
+        }
+      }
+      return ip;
+    }
+    function nextIP([a,b,c,d]) { d+=1; if(d<=255) return [a,b,c,d]; d=0; c+=1; if(c<=255) return [a,b,c,d]; c=0; b+=1; if(b<=255) return [a,b,c,d]; b=0; a+=1; return [a,b,c,d]; }
+    function prevIP([a,b,c,d]) { d-=1; if(d>=0) return [a,b,c,d]; d=255; c-=1; if(c>=0) return [a,b,c,d]; c=255; b-=1; if(b>=0) return [a,b,c,d]; b=255; a-=1; return [a,b,c,d]; }
+
+    function networkRanges(baseIp, basePrefix, desiredPrefix){
+      // Use integer arithmetic to compute networks and broadcasts reliably across octet boundaries
+      const baseInt = toInt(baseIp);
+      const baseMask = maskInt(basePrefix);
+      const baseNetInt = (baseInt & baseMask) >>> 0;
+      const subnetSize = Math.pow(2, 32 - desiredPrefix) >>> 0;
+      const subnetBits = desiredPrefix - basePrefix;
+      const numSubnets = Math.pow(2, subnetBits);
+      const ranges = [];
+      for (let i = 0; i < numSubnets; i++){
+        const networkInt = (baseNetInt + i * subnetSize) >>> 0;
+        const broadcastInt = (networkInt + subnetSize - 1) >>> 0;
+        const firstInt = (networkInt + 1) >>> 0;
+        const lastInt = (broadcastInt - 1) >>> 0;
+        ranges.push({
+          index: i+1,
+          network: octetsToIP(...fromInt(networkInt)) + "/" + desiredPrefix,
+          first: octetsToIP(...fromInt(firstInt)),
+          last: octetsToIP(...fromInt(lastInt)),
+          broadcast: octetsToIP(...fromInt(broadcastInt)),
+          gatewayFirst: octetsToIP(...fromInt(firstInt)),
+          gatewayLast: octetsToIP(...fromInt(lastInt))
+        });
+      }
+      return { ranges, subnetSize, numSubnets };
+    }
+
+    // ---------- IPv4 main ----------
+    function calculateIPv4(){
+      const baseNetEl = document.getElementById("v4_baseNet");
+      const baseNetErr = document.getElementById("v4_baseNetErr");
+      const basePrefix = parseInt(document.getElementById("v4_basePrefix").value,10);
+      const desiredPrefix = parseInt(document.getElementById("v4_desiredPrefix").value,10);
+      const hostReq = parseInt(document.getElementById("v4_hostReq").value,10);
+      const gatewayPref = document.getElementById("v4_gatewayPref").value;
+
+      let baseIp;
+      baseNetErr.style.display = "none";
+      try { baseIp = ipToOctets(baseNetEl.value); }
+      catch(e){ baseNetErr.textContent = e.message; baseNetErr.style.display = "block"; return; }
+      if (desiredPrefix < basePrefix) { baseNetErr.textContent = "Desired prefix must be >= base prefix."; baseNetErr.style.display = "block"; return; }
+
+      const subnetBits = desiredPrefix - basePrefix;
+      const hostBits = 32 - desiredPrefix;
+      const usableHosts = Math.max(0, Math.pow(2, hostBits) - 2);
+      const numSubnets = Math.pow(2, subnetBits);
+      const maskText = maskFromPrefix(desiredPrefix);
+      const wildcardText = wildcardFromMask(maskText);
+      const { ranges, block } = networkRanges(baseIp, basePrefix, desiredPrefix);
+
+      const ipClass = classOfIP(baseIp);
+      const priv = isPrivateIP(baseIp) ? "Private (RFC1918)" : "Public";
+      const cidrText = octetsToIP(...baseIp) + "/" + basePrefix;
+
+      document.getElementById("v4_hostBits").textContent = hostBits;
+      document.getElementById("v4_usableHosts").textContent = usableHosts;
+      document.getElementById("v4_subnetBits").textContent = subnetBits;
+      document.getElementById("v4_numSubnets").textContent = numSubnets;
+      document.getElementById("v4_maskText").textContent = maskText;
+      document.getElementById("v4_wildcardText").textContent = wildcardText;
+      document.getElementById("v4_ipClass").textContent = ipClass;
+      document.getElementById("v4_ipPriv").textContent = priv;
+      document.getElementById("v4_cidrText").textContent = cidrText;
+
+      const warnEl = document.getElementById("v4_warn");
+      warnEl.style.display = usableHosts < hostReq ? "block" : "none";
+      warnEl.textContent = usableHosts < hostReq ? `Warning: Usable hosts (${usableHosts}) < requirement (${hostReq}). Consider /25.` : "";
+
+      const tbody = document.querySelector("#v4_rangesTable tbody");
+      tbody.innerHTML = "";
+      ranges.forEach(r => {
+        const gw = gatewayPref === "first" ? r.gatewayFirst : r.gatewayLast;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.index}</td><td class="mono">${r.network}</td><td class="mono">${r.first}</td><td class="mono">${r.last}</td><td class="mono">${r.broadcast}</td><td class="mono">${gw}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("v4_dhcpScope").textContent = `${usableHosts} addresses per subnet`;
+      document.getElementById("v4_dhcpRes").textContent = `Reserve ~10–20 IPs for infra (router/switch/AP/server/printer). Exclude first addresses from DHCP pool.`;
+      document.getElementById("v4_aclMask").value = maskText;
+
+      // VLAN notes
+      const vlanId = document.getElementById("v4_vlanId").value || "—";
+      const vlanName = document.getElementById("v4_vlanName").value || "—";
+      const gwConv = gatewayPref === "first" ? "first usable (.1)" : "last usable (.254)";
+      const notes = `VLAN ${vlanId} (${vlanName})
+Gateway: ${gwConv}
+Mask: ${maskText}, Wildcard: ${wildcardText}
+DHCP scope: ${usableHosts} per subnet
+Base: ${cidrText}
+Suggested gateway (subnet 1): ${gatewayPref === "first" ? ranges[0].first : ranges[0].last}`;
+      document.getElementById("v4_vlanNotes").value = notes;
+
+      document.getElementById("v4_outputs").style.display = "block";
+    }
+    function exportIPv4(){
+      const rows = [["#", "Network", "First usable", "Last usable", "Broadcast", "Gateway"]];
+      document.querySelectorAll("#v4_rangesTable tbody tr").forEach(tr => { rows.push(Array.from(tr.children).map(td => td.textContent)); });
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], {type: "text/csv"}); const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "ipv4-subnets.csv"; a.click(); URL.revokeObjectURL(url);
+    }
+    function copyIPv4(){
+      if (document.getElementById("v4_outputs").style.display === "none") { alert("Calculate first."); return; }
+      const lines = [];
+      const ids = ["v4_hostBits","v4_usableHosts","v4_subnetBits","v4_numSubnets","v4_maskText","v4_wildcardText","v4_ipClass","v4_ipPriv","v4_cidrText"];
+      const labels = ["Host bits","Usable hosts","Subnet bits","Number of subnets","Mask","Wildcard","IP class","Private/Public","CIDR"];
+      ids.forEach((id,i)=> lines.push(`${labels[i]}: ${document.getElementById(id).textContent}`));
+      lines.push(""); lines.push("#,Network,First usable,Last usable,Broadcast,Gateway");
+      document.querySelectorAll("#v4_rangesTable tbody tr").forEach(tr => { lines.push(Array.from(tr.children).map(td => td.textContent).join(",")); });
+      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied summary."));
+    }
+    function calcAclWildcard(){
+      const mask = document.getElementById("v4_aclMask").value;
+      try {
+        const wc = wildcardFromMask(mask);
+        document.getElementById("v4_aclWildcard").value = wc;
+        document.getElementById("v4_aclExample").textContent = `Example (Cisco ACL): access-list 10 permit ${document.getElementById("v4_baseNet").value} ${wc}`;
+      } catch(e){
+        document.getElementById("v4_aclWildcard").value = "";
+        document.getElementById("v4_aclExample").textContent = "Invalid mask format.";
+      }
+    }
+
+    // ---------- IPv6 ----------
+    function normalizeIPv6(ip) {
+      // Simple compressor/expander (basic, does not handle every edge case; sufficient for visualization)
+      // Expand: fill :: by inserting the right number of 0 groups
+      let hasDbl = ip.includes("::");
+      let parts = ip.split("::");
+      let left = parts[0] ? parts[0].split(":").filter(Boolean) : [];
+      let right = parts[1] ? parts[1].split(":").filter(Boolean) : [];
+      let total = left.length + right.length;
+      if (hasDbl) {
+        const fill = 8 - total;
+        const zeros = Array(fill).fill("0");
+        parts = [...left, ...zeros, ...right];
+      } else {
+        parts = ip.split(":").filter(Boolean);
+      }
+      parts = parts.map(p => p || "0");
+      while (parts.length < 8) parts.push("0");
+      parts = parts.slice(0,8).map(p => p.padStart(4,"0").toLowerCase());
+      const expanded = parts.join(":");
+      // Compress: replace longest run of :0000: with ::
+      let compressed = expanded.replace(/(^|:)0{1,3}([0-9a-f])/g, "$1$2"); // trim leading zeros per group
+      // Find longest zero-run
+      const zeroRuns = compressed.split(":");
+      let bestStart=-1, bestLen=0, curStart=-1, curLen=0;
+      for (let i=0;i<zeroRuns.length;i++){
+        if (zeroRuns[i] === "0") { if(curStart<0) curStart=i; curLen++; if (curLen>bestLen){bestLen=curLen;bestStart=curStart;} }
+        else { curStart=-1; curLen=0; }
+      }
+      if (bestLen>1){
+        const compArr = compressed.split(":");
+        compArr.splice(bestStart,bestLen,"");
+        compressed = compArr.join(":").replace(":::", "::");
+        if (!compressed.includes("::")) compressed = compressed.replace(/(^|:)$/, "$1::");
+      }
+      return { expanded, compressed };
+    }
+    function ipv6Type(ip){
+      const low = ip.toLowerCase();
+      if (low.startsWith("fe80")) return "Link-local (fe80::/10)";
+      if (low.startsWith("fc") || low.startsWith("fd")) return "Unique-local (fc00::/7)";
+      return "Global (or other)";
+    }
+    function calcIPv6(){
+      const net = document.getElementById("v6_net").value.trim();
+      const prefix = parseInt(document.getElementById("v6_prefix").value,10);
+      const { expanded, compressed } = normalizeIPv6(net);
+      const hostBits = 128 - prefix;
+      const hostsStr = hostBits >= 64 ? "2^" + hostBits + " (astronomical)" : (BigInt(1) << BigInt(hostBits)).toString();
+
+      document.getElementById("v6_hosts").textContent = hostsStr;
+      document.getElementById("v6_type").textContent = ipv6Type(expanded);
+      document.getElementById("v6_short").textContent = compressed + "/" + prefix;
+      document.getElementById("v6_long").textContent = expanded + "/" + prefix;
+      document.getElementById("v6_outputs").style.display = "block";
+    }
+    function copyIPv6(){
+      const lines = [];
+      lines.push("IPv6 Summary:");
+      lines.push("Compressed: " + document.getElementById("v6_short").textContent);
+      lines.push("Expanded: " + document.getElementById("v6_long").textContent);
+      lines.push("Type: " + document.getElementById("v6_type").textContent);
+      lines.push("Hosts: " + document.getElementById("v6_hosts").textContent);
+      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied IPv6 summary."));
+    }
+
+    // ---------- VLSM ----------
+    function smallestPrefixForHosts(hosts){
+      // Find smallest prefix that can fit 'hosts' (usable = 2^(32-prefix) - 2)
+      for (let p=30; p>=0; p--){
+        const hostBits = 32 - p;
+        const usable = Math.max(0, Math.pow(2, hostBits) - 2);
+        if (usable >= hosts) return p;
+      }
+      return 0;
+    }
+    function calcVLSM(){
+      let base;
+      try { base = ipToOctets(document.getElementById("vlsm_base").value); }
+      catch(e){ alert(e.message); return; }
+      const basePrefix = parseInt(document.getElementById("vlsm_prefix").value,10);
+      const hostList = document.getElementById("vlsm_hosts").value.split(",").map(x=>parseInt(x.trim(),10)).filter(x=>!isNaN(x) && x>0).sort((a,b)=>b-a);
+      const gwPref = document.getElementById("vlsm_gateway").value;
+
+      const tbody = document.querySelector("#vlsm_table tbody"); tbody.innerHTML="";
+      const warn = document.getElementById("vlsm_warn"); warn.style.display="none";
+
+      const baseInt = toInt(base);
+      const baseNetInt = (baseInt & maskInt(basePrefix)) >>> 0;
+      let currentNetInt = baseNetInt;
+
+      for (let i=0;i<hostList.length;i++){
+        const h = hostList[i];
+        const pref = smallestPrefixForHosts(h);
+        if (pref < basePrefix) { warn.textContent = `Warning: Host requirement ${h} exceeds base block granularity.`; warn.style.display="block"; }
+        const subnetSize = Math.pow(2, 32 - pref) >>> 0;
+        const networkInt = currentNetInt;
+        const broadcastInt = (networkInt + subnetSize - 1) >>> 0;
+        const firstInt = (networkInt + 1) >>> 0;
+        const lastInt = (broadcastInt - 1) >>> 0;
+        const gw = gwPref === "first" ? octetsToIP(...fromInt(firstInt)) : octetsToIP(...fromInt(lastInt));
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${i+1}</td><td>${h}</td><td>/${pref}</td><td class="mono">${octetsToIP(...fromInt(networkInt))}/${pref}</td><td class="mono">${octetsToIP(...fromInt(firstInt))}</td><td class="mono">${octetsToIP(...fromInt(lastInt))}</td><td class="mono">${octetsToIP(...fromInt(broadcastInt))}</td><td class="mono">${gw}</td>`;
+        tbody.appendChild(tr);
+
+        currentNetInt = (networkInt + subnetSize) >>> 0;
+      }
+      document.getElementById("vlsm_outputs").style.display = "block";
+    }
+    function exportVLSM(){
+      const rows = [["#", "Hosts req.", "Prefix", "Network", "First usable", "Last usable", "Broadcast", "Gateway"]];
+      document.querySelectorAll("#vlsm_table tbody tr").forEach(tr => { rows.push(Array.from(tr.children).map(td => td.textContent)); });
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], {type: "text/csv"}); const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "vlsm-plan.csv"; a.click(); URL.revokeObjectURL(url);
+    }
+    function copyVLSM(){
+      const lines = ["VLSM Plan","#,Hosts,Prefix,Network,First,Last,Broadcast,Gateway"];
+      document.querySelectorAll("#vlsm_table tbody tr").forEach(tr => { lines.push(Array.from(tr.children).map(td => td.textContent).join(",")); });
+      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied VLSM plan."));
+    }
+
+    // ---------- Supernetting ----------
+    function parseCIDR(cidr){
+      const [ip, prefStr] = cidr.split("/");
+      const prefix = parseInt(prefStr,10);
+      return { ip: ipToOctets(ip), prefix };
+    }
+    function toInt([a,b,c,d]){ return ((a<<24)>>>0) + (b<<16) + (c<<8) + d; }
+    function fromInt(n){ return [ (n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255 ]; }
+    function maskInt(prefix){ return prefix===0 ? 0 : ((0xFFFFFFFF << (32 - prefix)) >>> 0); }
+    function calcSupernet(){
+      const lines = document.getElementById("agg_list").value.split("\n").map(l=>l.trim()).filter(Boolean);
+      if (lines.length === 0) { alert("Add networks first."); return; }
+      const nets = lines.map(parseCIDR).sort((a,b)=> toInt(a.ip) - toInt(b.ip) || a.prefix - b.prefix);
+      // Verify contiguity and find summary prefix by common bits
+      const first = nets[0], last = nets[nets.length-1];
+      const firstInt = toInt(first.ip), lastInt = toInt(last.ip);
+      let common = 0;
+      for (let i=31;i>=0;i--){
+        const bitF = (firstInt >>> i) & 1;
+        const bitL = (lastInt >>> i) & 1;
+        if (bitF === bitL) common++;
+        else break;
+      }
+      const summaryPrefix = common;
+      const summaryMask = maskInt(summaryPrefix);
+      const summaryNetInt = firstInt & summaryMask;
+      const summaryNet = fromInt(summaryNetInt);
+      const result = `${octetsToIP(...summaryNet)}/${summaryPrefix}`;
+      document.getElementById("agg_result").value = result + "\n(Note: ensure inputs are contiguous blocks for accurate summarization.)";
+    }
+    function copySupernet(){
+      const t = document.getElementById("agg_result").value;
+      if (!t) { alert("Summarize first."); return; }
+      navigator.clipboard.writeText(t).then(()=> alert("Copied summary route."));
+    }
+
+    // ---------- Binary view ----------
+    function bitsOfOctet(n){ return n.toString(2).padStart(8,"0"); }
+    function calcBinary(){
+      let ip, prefix;
+      try { ip = ipToOctets(document.getElementById("bin_ip").value); } catch(e){ alert(e.message); return; }
+      prefix = parseInt(document.getElementById("bin_prefix").value,10);
+
+      const mask = maskFromPrefix(prefix);
+      const wc = wildcardFromMask(mask);
+
+      // Compute network address by zeroing host bits
+      const ipInt = toInt(ip);
+      const maskI = maskInt(prefix);
+      const netInt = ipInt & maskI;
+      const net = fromInt(netInt);
+
+      document.getElementById("bin_mask").textContent = mask;
+      document.getElementById("bin_wc").textContent = wc;
+      document.getElementById("bin_network").textContent = octetsToIP(...net) + "/" + prefix;
+
+      const bits = ip.map(bitsOfOctet);
+      const maskBits = fromInt(maskI).map(bitsOfOctet);
+      function decorate(octBits, maskOctBits){
+        let out = "";
+        for (let i=0;i<8;i++){
+          const m = maskOctBits[i] === "1";
+          out += m ? `<span class="netbit">${octBits[i]}</span>` : `<span class="hostbit">${octBits[i]}</span>`;
+        }
+        return out;
+      }
+      document.getElementById("bin_oct1").innerHTML = `Octet 1: ${decorate(bits[0], maskBits[0])}`;
+      document.getElementById("bin_oct2").innerHTML = `Octet 2: ${decorate(bits[1], maskBits[1])}`;
+      document.getElementById("bin_oct3").innerHTML = `Octet 3: ${decorate(bits[2], maskBits[2])}`;
+      document.getElementById("bin_oct4").innerHTML = `Octet 4: ${decorate(bits[3], maskBits[3])}`;
+      document.getElementById("bin_outputs").style.display = "block";
+    }
+    function copyBinary(){
+      const lines = [];
+      lines.push("Binary View:");
+      lines.push("Mask: " + document.getElementById("bin_mask").textContent);
+      lines.push("Wildcard: " + document.getElementById("bin_wc").textContent);
+      lines.push("Network: " + document.getElementById("bin_network").textContent);
+      navigator.clipboard.writeText(lines.join("\n")).then(()=> alert("Copied binary summary."));
+    }
+    // Set dynamic copyright year in footer
+    try {
+      const yel = document.getElementById('copyrightYear');
+      if (yel) yel.textContent = new Date().getFullYear();
+    } catch(e) { /* noop */ }
+  </script>
+</body>
+</html>
