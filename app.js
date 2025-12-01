@@ -398,6 +398,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".tabpane").forEach(pane => pane.style.display = "none");
       const pane = document.getElementById(tabName);
       if (pane) pane.style.display = "block";
+      
+      // Hide header actions on home page
+      const headerActions = document.querySelector(".header-actions");
+      if (tabName === "home") {
+        headerActions.style.display = "none";
+      } else {
+        headerActions.style.display = "flex";
+      }
     });
   });
   
