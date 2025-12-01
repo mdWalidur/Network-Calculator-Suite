@@ -399,12 +399,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const pane = document.getElementById(tabName);
       if (pane) pane.style.display = "block";
       
-      // Hide header actions on home page
-      const headerActions = document.querySelector(".header-actions");
+      // Hide entire header on home page
+      const topBar = document.querySelector(".top-bar");
       if (tabName === "home") {
-        headerActions.style.display = "none";
+        topBar.classList.add("home-hidden");
       } else {
-        headerActions.style.display = "flex";
+        topBar.classList.remove("home-hidden");
       }
     });
   });
