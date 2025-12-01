@@ -531,7 +531,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <li>Binary Visualization</li>
           </ul>
         </div>
-        <p class="copyright">© 2025 WR - Network Intelligence Suite</p>
+        <div class="about-developer">
+          <h4>Developer</h4>
+          <p><strong>Md Walidur Rahman</strong></p>
+          <p class="dev-desc">IT expert, network engineer, and web tools developer.</p>
+        </div>
+        <p class="copyright">© 2025 Network Calculator Suite</p>
       </div>
     `;
     backdrop.classList.add("show");

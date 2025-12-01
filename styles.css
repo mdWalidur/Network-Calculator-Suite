@@ -857,12 +857,41 @@ table tr:hover {
   margin-right: 8px;
 }
 
+.about-developer {
+  background: rgba(212, 175, 55, 0.1);
+  padding: 15px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary-gold);
+  margin-top: 10px;
+}
+
+.about-developer h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--primary-gold);
+}
+
+.about-developer p {
+  margin: 4px 0;
+  color: var(--text-secondary);
+}
+
+.about-developer strong {
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.dev-desc {
+  font-size: 13px;
+  font-style: italic;
+}
+
 .about-panel .copyright {
   text-align: center;
   color: var(--text-muted);
   font-size: 12px;
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--border-light);
 }
 
