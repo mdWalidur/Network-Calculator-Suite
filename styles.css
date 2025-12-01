@@ -474,6 +474,7 @@ label {
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
+  margin-bottom: 24px;
 }
 
 .kpi {
