@@ -838,6 +838,8 @@ table tr:focus-within {
   font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
+  flex: 1;
+  text-align: center;
 }
 
 .modal-close {
