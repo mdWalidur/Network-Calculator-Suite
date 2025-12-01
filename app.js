@@ -404,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsDropdown = document.getElementById("settingsDropdown");
   const settingsItem = document.getElementById("settingsItem");
   const aboutItem = document.getElementById("aboutItem");
+  const aboutLink = document.getElementById("aboutLink");
   const backdrop = document.querySelector(".modal-backdrop");
   const modalClose = document.querySelector(".modal-close");
   const modalCloseBtn = document.getElementById("modal-close-btn");
@@ -544,6 +545,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeModal() {
     backdrop.classList.remove("show");
     settingsDropdown.classList.remove("show");
+  }
+
+  // Footer about link
+  if (aboutLink) {
+    aboutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showAbout();
+    });
   }
 
   modalClose.addEventListener("click", closeModal);
