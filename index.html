@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png?v=4">
   <link rel="shortcut icon" href="favicon.ico?v=4" />
-  <link rel="stylesheet" href="styles.css?v=20251201c">
+  <link rel="stylesheet" href="styles.css?v=20251201d">
 </head>
 <body>
   <div class="container">
@@ -47,21 +47,6 @@
           <span class="label">Binary</span>
         </button>
       </nav>
-      <div class="sidebar-footer">
-        <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 1v6m0 6v6m0-11l5.196-3m0 12L12 13m5.196 8L12 17m-5.196-8L12 13m-5.196 0L12 7M6.804 21L12 17"/>
-          </svg>
-        </button>
-
-        <!-- Settings Dropdown Menu -->
-        <div class="settings-dropdown" id="settingsDropdown">
-          <button class="settings-menu-item" id="settingsItem">⚙️ Settings</button>
-          <button class="settings-menu-item" id="aboutItem">ℹ️ About</button>
-        </div>
-      </div>
-      
     </aside>
 
     <!-- Main content -->
@@ -69,7 +54,6 @@
       <header class="top-bar">
         <h2 id="page-title" class="page-title">IPv4 Subnetting</h2>
         <div class="header-actions">
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme"></button>
           <button class="btn" onclick="activeCalc().calculate()">Calculate</button>
           <button class="btn secondary" onclick="activeCalc().export()">Export</button>
           <button class="btn secondary" onclick="activeCalc().copy()">Copy</button>
