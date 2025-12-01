@@ -372,8 +372,9 @@ function copyBinary() {
 
 // ============== Tab & Modal Initialization ==============
 document.addEventListener("DOMContentLoaded", () => {
-  const tabNames = ["ipv4", "ipv6", "vlsm", "supernet", "binary"];
+  const tabNames = ["home", "ipv4", "ipv6", "vlsm", "supernet", "binary"];
   const titleMap = {
+    home: "Home",
     ipv4: "IPv4 Subnetting",
     ipv6: "IPv6 Calculator",
     vlsm: "VLSM Planning",
@@ -397,6 +398,15 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".tabpane").forEach(pane => pane.style.display = "none");
       const pane = document.getElementById(tabName);
       if (pane) pane.style.display = "block";
+    });
+  });
+  
+  // Feature card navigation
+  document.querySelectorAll(".feature-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const tabName = card.dataset.tab;
+      const sidebarBtn = document.querySelector(`.sidebar-item[data-tab="${tabName}"]`);
+      if (sidebarBtn) sidebarBtn.click();
     });
   });
   // Modal elements

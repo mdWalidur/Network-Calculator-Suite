@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png?v=4">
   <link rel="shortcut icon" href="favicon.ico?v=4" />
-  <link rel="stylesheet" href="styles.css?v=20251201i">
+  <link rel="stylesheet" href="styles.css?v=20251201j">
 </head>
 <body>
   <div class="container">
@@ -26,7 +26,11 @@
         <p class="brand-subtitle">Suite</p>
       </div>
       <nav class="sidebar-nav" role="navigation">
-        <button class="sidebar-item active" data-tab="ipv4" title="IPv4 Subnetting Calculator">
+        <button class="sidebar-item active" data-tab="home" title="Home">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+          <span class="label">Home</span>
+        </button>
+        <button class="sidebar-item" data-tab="ipv4" title="IPv4 Subnetting Calculator">
           <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg></span>
           <span class="label">IPv4</span>
         </button>
@@ -61,8 +65,87 @@
       </header>
 
       <div class="content-area">
+        <!-- Home tab -->
+        <div class="card tabpane" id="home" style="display:block;">
+          <div class="home-hero">
+            <div class="home-logo">
+              <svg viewBox="0 0 200 200" width="120" height="120">
+                <defs>
+                  <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#logoGradient)" stroke-width="4"/>
+                <circle cx="100" cy="100" r="20" fill="url(#logoGradient)"/>
+                <circle cx="60" cy="70" r="12" fill="url(#logoGradient)"/>
+                <circle cx="140" cy="70" r="12" fill="url(#logoGradient)"/>
+                <circle cx="70" cy="130" r="12" fill="url(#logoGradient)"/>
+                <circle cx="130" cy="130" r="12" fill="url(#logoGradient)"/>
+                <line x1="100" y1="100" x2="60" y2="70" stroke="url(#logoGradient)" stroke-width="3"/>
+                <line x1="100" y1="100" x2="140" y2="70" stroke="url(#logoGradient)" stroke-width="3"/>
+                <line x1="100" y1="100" x2="70" y2="130" stroke="url(#logoGradient)" stroke-width="3"/>
+                <line x1="100" y1="100" x2="130" y2="130" stroke="url(#logoGradient)" stroke-width="3"/>
+              </svg>
+            </div>
+            <h1 class="home-title">Network Calculator Suite</h1>
+            <p class="home-subtitle">Professional Subnetting & Network Planning Tools</p>
+            <p class="home-description">A comprehensive suite of networking calculators designed for network engineers, IT professionals, and students. Calculate subnets, plan VLSM allocations, aggregate routes, and visualize binary representations with ease.</p>
+          </div>
+
+          <div class="home-features">
+            <h3 class="section-title">Available Tools</h3>
+            <div class="feature-grid">
+              <div class="feature-card" data-tab="ipv4">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                </div>
+                <h4>IPv4 Subnetting</h4>
+                <p>Classical subnetting calculator with DHCP planning, ACL helpers, and gateway configuration options.</p>
+              </div>
+              <div class="feature-card" data-tab="ipv6">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <h4>IPv6 Calculator</h4>
+                <p>IPv6 address compression, expansion, and network notation with prefix length calculations.</p>
+              </div>
+              <div class="feature-card" data-tab="vlsm">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </div>
+                <h4>VLSM Planning</h4>
+                <p>Variable Length Subnet Mask planner for efficient IP address allocation across multiple networks.</p>
+              </div>
+              <div class="feature-card" data-tab="supernet">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
+                </div>
+                <h4>Route Aggregation</h4>
+                <p>Supernetting and route summarization tool for optimizing routing tables and reducing entries.</p>
+              </div>
+              <div class="feature-card" data-tab="binary">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v4H6zM14 4h4v4h-4zM6 12h4v4H6zM14 12h4v4h-4z"/><circle cx="8" cy="18" r="2" fill="currentColor"/><circle cx="16" cy="18" r="2" fill="currentColor"/></svg>
+                </div>
+                <h4>Binary Visualization</h4>
+                <p>Bit-level visualization showing network and host portions in binary format for learning.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-cta">
+            <h3 class="section-title">Get Started</h3>
+            <p>Select a calculator from the sidebar to begin, or click on any tool card above to jump directly to that calculator.</p>
+            <div class="cta-buttons">
+              <button class="btn" onclick="document.querySelector('[data-tab=ipv4]').click()">Start with IPv4</button>
+              <button class="btn secondary" onclick="document.querySelector('#aboutLink').click()">Learn More</button>
+            </div>
+          </div>
+        </div>
+
         <!-- IPv4 tab -->
-        <div class="card tabpane" id="ipv4" style="display:block;">
+        <div class="card tabpane" id="ipv4" style="display:none;">
           <h3 class="section-title">IPv4 Subnetting</h3>
           <div class="grid">
             <div>
