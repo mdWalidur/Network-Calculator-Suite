@@ -533,8 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="about-developer">
           <h4>Developer</h4>
-          <p><strong>Md Walidur Rahman</strong></p>
-          <p class="dev-desc">IT expert, network engineer, and web tools developer.</p>
+          <p><strong>Md Walidur Rahman</strong> — IT Expert, Network Engineer, AWS Cloud and Web tools developer.</p>
         </div>
         <p class="copyright">© 2025 Network Calculator Suite</p>
       </div>
