@@ -1,75 +1,103 @@
 #!/usr/bin/env python3
 """Generate PNG favicons from SVG favicon"""
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 
 def create_favicon_png(size, filename):
-    """Create a PNG favicon with network hub design"""
+    """Create a PNG favicon with hexagonal network design"""
     # Create image with transparent background
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     
-    # Colors
-    dark_bg = (26, 31, 46, 255)
-    gold = (212, 175, 55, 255)
-    blue = (74, 158, 255, 255)
+    # Colors - vibrant gradient palette
+    dark_bg = (26, 31, 58, 255)
+    orange = (255, 107, 53, 255)
+    gold = (253, 200, 48, 255)
+    purple = (118, 75, 162, 255)
+    blue = (102, 126, 234, 255)
     
     # Scale factors
     scale = size / 200
     
     # Background rounded rectangle
-    corner_radius = int(45 * scale)
+    corner_radius = int(48 * scale)
     draw.rounded_rectangle([(0, 0), (size, size)], corner_radius, fill=dark_bg)
     
     # Center point
     cx, cy = size // 2, size // 2
     
-    # Hub sizes
-    hub_outer = int(22 * scale)
-    hub_inner = int(16 * scale)
-    node_size = int(10 * scale)
+    # Hexagon dimensions
+    hex_height = int(60 * scale)
+    hex_width = int(30 * scale)
+    node_size = max(2, int(7 * scale))
+    line_width = max(1, int(3 * scale))
     
-    # Draw connection lines (diamond pattern)
-    line_width = max(1, int(4 * scale))
+    # Top hexagon vertices
+    top_top = (cx, cy - hex_height)
+    top_right_upper = (cx + hex_width, cy - int(40 * scale))
+    top_right_lower = (cx + hex_width, cy - int(20 * scale))
+    top_left_upper = (cx - hex_width, cy - int(40 * scale))
+    top_left_lower = (cx - hex_width, cy - int(20 * scale))
     
-    # Top connection
-    draw.line([(cx, cy), (cx, cy - int(45 * scale))], fill=blue, width=line_width)
-    # Right connection
-    draw.line([(cx, cy), (cx + int(45 * scale), cy)], fill=gold, width=line_width)
-    # Bottom connection
-    draw.line([(cx, cy), (cx, cy + int(45 * scale))], fill=blue, width=line_width)
-    # Left connection
-    draw.line([(cx, cy), (cx - int(45 * scale), cy)], fill=gold, width=line_width)
+    # Bottom hexagon vertices
+    bot_top_right = (cx + hex_width, cy + int(20 * scale))
+    bot_top_left = (cx - hex_width, cy + int(20 * scale))
+    bot_right_upper = (cx + hex_width, cy + int(40 * scale))
+    bot_left_upper = (cx - hex_width, cy + int(40 * scale))
+    bot_bottom = (cx, cy + hex_height)
     
-    # Draw central hub (outer glow)
-    glow_color = (212, 175, 55, 80)
+    # Draw hexagon outlines
+    # Top hexagon (orange gradient)
+    draw.line([top_top, top_right_upper], fill=orange, width=line_width)
+    draw.line([top_right_upper, top_right_lower], fill=gold, width=line_width)
+    draw.line([top_right_lower, (cx, cy)], fill=gold, width=line_width)
+    draw.line([(cx, cy), top_left_lower], fill=gold, width=line_width)
+    draw.line([top_left_lower, top_left_upper], fill=orange, width=line_width)
+    draw.line([top_left_upper, top_top], fill=orange, width=line_width)
+    
+    # Bottom hexagon (purple gradient)
+    draw.line([(cx, cy), bot_top_right], fill=blue, width=line_width)
+    draw.line([bot_top_right, bot_right_upper], fill=purple, width=line_width)
+    draw.line([bot_right_upper, bot_bottom], fill=purple, width=line_width)
+    draw.line([bot_bottom, bot_left_upper], fill=purple, width=line_width)
+    draw.line([bot_left_upper, bot_top_left], fill=blue, width=line_width)
+    draw.line([bot_top_left, (cx, cy)], fill=blue, width=line_width)
+    
+    # Draw nodes
+    # Top hexagon nodes
+    draw.ellipse([(top_top[0] - node_size, top_top[1] - node_size),
+                  (top_top[0] + node_size, top_top[1] + node_size)], fill=orange)
+    draw.ellipse([(top_right_upper[0] - node_size, top_right_upper[1] - node_size),
+                  (top_right_upper[0] + node_size, top_right_upper[1] + node_size)], fill=gold)
+    draw.ellipse([(top_right_lower[0] - node_size, top_right_lower[1] - node_size),
+                  (top_right_lower[0] + node_size, top_right_lower[1] + node_size)], fill=gold)
+    draw.ellipse([(top_left_upper[0] - node_size, top_left_upper[1] - node_size),
+                  (top_left_upper[0] + node_size, top_left_upper[1] + node_size)], fill=orange)
+    draw.ellipse([(top_left_lower[0] - node_size, top_left_lower[1] - node_size),
+                  (top_left_lower[0] + node_size, top_left_lower[1] + node_size)], fill=gold)
+    
+    # Bottom hexagon nodes
+    draw.ellipse([(bot_top_right[0] - node_size, bot_top_right[1] - node_size),
+                  (bot_top_right[0] + node_size, bot_top_right[1] + node_size)], fill=blue)
+    draw.ellipse([(bot_right_upper[0] - node_size, bot_right_upper[1] - node_size),
+                  (bot_right_upper[0] + node_size, bot_right_upper[1] + node_size)], fill=purple)
+    draw.ellipse([(bot_left_upper[0] - node_size, bot_left_upper[1] - node_size),
+                  (bot_left_upper[0] + node_size, bot_left_upper[1] + node_size)], fill=purple)
+    draw.ellipse([(bot_top_left[0] - node_size, bot_top_left[1] - node_size),
+                  (bot_top_left[0] + node_size, bot_top_left[1] + node_size)], fill=blue)
+    draw.ellipse([(bot_bottom[0] - node_size, bot_bottom[1] - node_size),
+                  (bot_bottom[0] + node_size, bot_bottom[1] + node_size)], fill=purple)
+    
+    # Central hub - white with purple core
+    hub_outer = max(3, int(10 * scale))
+    hub_inner = max(2, int(6 * scale))
     draw.ellipse([(cx - hub_outer, cy - hub_outer), 
                   (cx + hub_outer, cy + hub_outer)], 
-                 fill=glow_color)
-    
-    # Draw central hub (inner solid)
+                 fill=(255, 255, 255, 255))
     draw.ellipse([(cx - hub_inner, cy - hub_inner), 
                   (cx + hub_inner, cy + hub_inner)], 
-                 fill=gold)
-    
-    # Draw network nodes (diamond pattern)
-    # Top node
-    draw.ellipse([(cx - node_size, cy - int(45 * scale) - node_size),
-                  (cx + node_size, cy - int(45 * scale) + node_size)],
-                 fill=blue)
-    # Right node
-    draw.ellipse([(cx + int(45 * scale) - node_size, cy - node_size),
-                  (cx + int(45 * scale) + node_size, cy + node_size)],
-                 fill=gold)
-    # Bottom node
-    draw.ellipse([(cx - node_size, cy + int(45 * scale) - node_size),
-                  (cx + node_size, cy + int(45 * scale) + node_size)],
-                 fill=blue)
-    # Left node
-    draw.ellipse([(cx - int(45 * scale) - node_size, cy - node_size),
-                  (cx - int(45 * scale) + node_size, cy + node_size)],
-                 fill=gold)
+                 fill=purple)
     
     # Save
     img.save(filename, 'PNG')
