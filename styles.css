@@ -609,7 +609,8 @@ table tr:focus-within {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -625,13 +626,15 @@ table tr:focus-within {
 }
 
 .modal {
-  background: var(--bg-surface);
+  background: rgba(26, 31, 53, 0.95);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   width: 90%;
   max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: var(--shadow-lg);
 }
 
@@ -639,14 +642,15 @@ table tr:focus-within {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 24px 28px;
   border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -678,7 +682,7 @@ table tr:focus-within {
 }
 
 .modal-body {
-  padding: 24px;
+  padding: 28px;
   color: var(--text-secondary);
   line-height: 1.8;
 }
@@ -714,8 +718,9 @@ table tr:focus-within {
 }
 
 .modal-footer {
-  padding: 16px 24px;
+  padding: 20px 28px;
   border-top: 1px solid var(--border-light);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   display: flex;
   justify-content: flex-end;
   gap: 10px;
