@@ -4,21 +4,39 @@
       <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#4a9eff;stop-opacity:1" />
     </linearGradient>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a9eff;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:0.2" />
+    </linearGradient>
   </defs>
 
-  <!-- Subtle halo (smaller) -->
-  <circle cx="100" cy="100" r="64" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.18"/>
-
-  <!-- Network nodes (tighter layout) -->
-  <circle cx="78" cy="78" r="6" fill="#d4af37"/>
-  <circle cx="122" cy="78" r="6" fill="#4a9eff"/>
-  <circle cx="100" cy="110" r="6" fill="#d4af37"/>
-
-  <!-- Network connections -->
-  <line x1="78" y1="78" x2="100" y2="110" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.7" stroke-linecap="round"/>
-  <line x1="122" y1="78" x2="100" y2="110" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.7" stroke-linecap="round"/>
-  <line x1="78" y1="78" x2="122" y2="78" stroke="url(#logoGradient)" stroke-width="1.4" opacity="0.65" stroke-linecap="round"/>
-
-  <!-- WR monogram (smaller, centered above bottom) -->
-  <text x="100" y="146" font-family="Inter, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="url(#logoGradient)">WR</text>
+  <!-- Background circle with gradient -->
+  <circle cx="100" cy="100" r="85" fill="url(#shieldGradient)"/>
+  
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="url(#logoGradient)" stroke-width="3" opacity="0.4"/>
+  
+  <!-- Network hub center -->
+  <circle cx="100" cy="100" r="18" fill="url(#logoGradient)"/>
+  <circle cx="100" cy="100" r="14" fill="#1a1f2e" opacity="0.3"/>
+  
+  <!-- Connection nodes (8 directions) -->
+  <circle cx="100" cy="45" r="8" fill="#4a9eff"/>
+  <circle cx="141" cy="59" r="8" fill="#d4af37"/>
+  <circle cx="155" cy="100" r="8" fill="#4a9eff"/>
+  <circle cx="141" cy="141" r="8" fill="#d4af37"/>
+  <circle cx="100" cy="155" r="8" fill="#4a9eff"/>
+  <circle cx="59" cy="141" r="8" fill="#d4af37"/>
+  <circle cx="45" cy="100" r="8" fill="#4a9eff"/>
+  <circle cx="59" cy="59" r="8" fill="#d4af37"/>
+  
+  <!-- Connection lines -->
+  <line x1="100" y1="100" x2="100" y2="45" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="141" y2="59" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="155" y2="100" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="141" y2="141" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="100" y2="155" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="59" y2="141" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="45" y2="100" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="59" y2="59" stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.6" stroke-linecap="round"/>
 </svg>

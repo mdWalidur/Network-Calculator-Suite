@@ -1045,17 +1045,33 @@ table tr {
 
 /* Logo sizing: keep logo small inside sidebar */
 .logo-mark {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(74, 158, 255, 0.1));
+  padding: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo-mark:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
 }
 
 .logo-mark img {
-  width: 48px;
+  width: 100%;
   height: auto;
   display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-mark:hover img {
+  transform: scale(1.1);
 }
 
