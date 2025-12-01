@@ -260,7 +260,7 @@ body {
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
   flex-wrap: wrap;
 }
