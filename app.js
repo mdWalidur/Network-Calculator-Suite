@@ -399,118 +399,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (pane) pane.style.display = "block";
     });
   });
-  // Settings dropdown and modal
-  const settingsBtn = document.getElementById("settingsBtn");
-  const settingsDropdown = document.getElementById("settingsDropdown");
-  const settingsItem = document.getElementById("settingsItem");
-  const aboutItem = document.getElementById("aboutItem");
+  // Modal elements
   const aboutLink = document.getElementById("aboutLink");
   const backdrop = document.querySelector(".modal-backdrop");
   const modalClose = document.querySelector(".modal-close");
   const modalCloseBtn = document.getElementById("modal-close-btn");
   const modalHeader = document.querySelector(".modal-header");
   const modalBody = document.querySelector(".modal-body");
-  let htmlRef = document.documentElement;
-
-  // Theme management functions
-  function setTheme(theme) {
-    if (theme === "light") {
-      htmlRef.classList.add("light-theme");
-      localStorage.setItem("theme", "light");
-    } else {
-      htmlRef.classList.remove("light-theme");
-      localStorage.setItem("theme", "dark");
-    }
-  }
-
-  function getTheme() {
-    return localStorage.getItem("theme") || "dark";
-  }
-
-  function toggleTheme() {
-    const currentTheme = htmlRef.classList.contains("light-theme") ? "light" : "dark";
-    setTheme(currentTheme === "light" ? "dark" : "light");
-  }
-
-  // Initialize theme from localStorage
-  const savedTheme = getTheme();
-  if (savedTheme === "light") {
-    htmlRef.classList.add("light-theme");
-  }
-
-  // Header theme toggle button
-  const headerThemeToggle = document.getElementById("themeToggle");
-  if (headerThemeToggle) {
-    headerThemeToggle.addEventListener("click", toggleTheme);
-  }
-
-  // Toggle settings dropdown
-  settingsBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    settingsDropdown.classList.toggle("show");
-  });
-
-  // Settings menu items
-  settingsItem.addEventListener("click", () => {
-    settingsDropdown.classList.remove("show");
-    showSettings();
-  });
-
-  aboutItem.addEventListener("click", () => {
-    settingsDropdown.classList.remove("show");
-    showAbout();
-  });
-
-  function showSettings() {
-    const isLight = htmlRef.classList.contains("light-theme");
-    modalHeader.innerHTML = "<h2>Settings</h2>";
-    modalBody.innerHTML = `
-      <div class="settings-panel">
-        <div class="setting-group">
-          <label>Theme Preferences</label>
-          <p class="setting-description">Choose your preferred color scheme for the calculator interface.</p>
-          <div class="theme-options">
-            <button id="themeDark" class="theme-btn ${!isLight ? 'active' : ''}">
-              <span class="theme-icon">🌙</span>
-              <span class="theme-name">Dark Mode</span>
-              <span class="theme-desc">Low-light viewing</span>
-            </button>
-            <button id="themeLight" class="theme-btn ${isLight ? 'active' : ''}">
-              <span class="theme-icon">☀️</span>
-              <span class="theme-name">Light Mode</span>
-              <span class="theme-desc">Bright & clear</span>
-            </button>
-          </div>
-        </div>
-        <div class="setting-group">
-          <label>Display Options</label>
-          <p class="setting-description">Additional customization options will be available in future updates.</p>
-          <div class="coming-soon-badge">Coming Soon</div>
-        </div>
-      </div>
-    `;
-    backdrop.classList.add("show");
-    
-    // Theme toggle buttons
-    const themeDarkBtn = document.getElementById("themeDark");
-    const themeLightBtn = document.getElementById("themeLight");
-    
-    if (themeDarkBtn) {
-      themeDarkBtn.addEventListener("click", () => {
-        setTheme("dark");
-        themeDarkBtn.classList.add("active");
-        themeLightBtn.classList.remove("active");
-      });
-    }
-    
-    if (themeLightBtn) {
-      themeLightBtn.addEventListener("click", () => {
-        setTheme("light");
-        themeLightBtn.classList.add("active");
-        themeDarkBtn.classList.remove("active");
-      });
-    }
-  }
 
   function showAbout() {
     modalHeader.innerHTML = "<h2>About Network Calculator Suite</h2>";
@@ -544,7 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeModal() {
     backdrop.classList.remove("show");
-    settingsDropdown.classList.remove("show");
   }
 
   // Footer about link
@@ -555,17 +449,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  modalClose.addEventListener("click", closeModal);
-  modalCloseBtn.addEventListener("click", closeModal);
-  backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) closeModal();
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!settingsBtn.contains(e.target) && !settingsDropdown.contains(e.target)) {
-      settingsDropdown.classList.remove("show");
-    }
-  });
+  if (modalClose) {
+    modalClose.addEventListener("click", closeModal);
+  }
+  
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener("click", closeModal);
+  }
+  
+  if (backdrop) {
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) closeModal();
+    });
+  }
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
