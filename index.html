@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png?v=4">
   <link rel="shortcut icon" href="favicon.ico?v=4" />
-  <link rel="stylesheet" href="styles.css?v=20251203a">
+  <link rel="stylesheet" href="styles.css?v=20251203b">
 </head>
 <body>
   <div class="container">
@@ -91,6 +91,26 @@
             <h1 class="home-title">Network Calculator Suite</h1>
             <p class="home-subtitle">Professional Subnetting & Network Planning Tools</p>
             <p class="home-description">A comprehensive suite of networking calculators designed for network engineers, IT professionals, and students. Calculate subnets, plan VLSM allocations, aggregate routes, and visualize binary representations with ease.</p>
+            
+            <!-- Web Search -->
+            <div class="search-container">
+              <form id="searchForm" class="search-form">
+                <div class="search-input-wrapper">
+                  <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                  <input type="text" id="searchInput" class="search-input" placeholder="Search the web..." />
+                  <select id="searchEngine" class="search-engine-select">
+                    <option value="google">Google</option>
+                    <option value="bing">Bing</option>
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="yahoo">Yahoo</option>
+                  </select>
+                </div>
+                <button type="submit" class="search-btn">Search</button>
+              </form>
+            </div>
           </div>
 
           <div class="home-features">

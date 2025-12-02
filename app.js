@@ -417,6 +417,31 @@ document.addEventListener("DOMContentLoaded", () => {
       if (sidebarBtn) sidebarBtn.click();
     });
   });
+  
+  // Web Search functionality
+  const searchForm = document.getElementById("searchForm");
+  const searchInput = document.getElementById("searchInput");
+  const searchEngine = document.getElementById("searchEngine");
+  
+  if (searchForm) {
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      if (!query) return;
+      
+      const engines = {
+        google: "https://www.google.com/search?q=",
+        bing: "https://www.bing.com/search?q=",
+        duckduckgo: "https://duckduckgo.com/?q=",
+        yahoo: "https://search.yahoo.com/search?p="
+      };
+      
+      const selectedEngine = searchEngine.value;
+      const searchUrl = engines[selectedEngine] + encodeURIComponent(query);
+      window.open(searchUrl, "_blank");
+    });
+  }
+  
   // Modal elements
   const aboutLink = document.getElementById("aboutLink");
   const backdrop = document.querySelector(".modal-backdrop");
