@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png?v=4">
   <link rel="shortcut icon" href="favicon.ico?v=4" />
-  <link rel="stylesheet" href="styles.css?v=20251203d">
+  <link rel="stylesheet" href="styles.css?v=20251203e">
 </head>
 <body>
   <div class="container">
@@ -100,14 +100,14 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                   </svg>
-                  <input type="text" id="searchInput" class="search-input" placeholder="Search the web..." />
-                  <select id="searchEngine" class="search-engine-select">
-                    <option value="google">Google</option>
-                    <option value="bing">Bing</option>
-                    <option value="duckduckgo">DuckDuckGo</option>
-                    <option value="yahoo">Yahoo</option>
-                  </select>
+                  <input type="text" id="searchInput" class="search-input" placeholder="Search the web..." autocomplete="off" />
                 </div>
+                <select id="searchEngine" class="search-engine-select">
+                  <option value="google">Google</option>
+                  <option value="bing">Bing</option>
+                  <option value="duckduckgo">DuckDuckGo</option>
+                  <option value="yahoo">Yahoo</option>
+                </select>
                 <button type="submit" class="search-btn">Search</button>
               </form>
             </div>

@@ -747,13 +747,14 @@ table tr:focus-within {
 .search-form {
   display: flex;
   gap: 12px;
-  align-items: center;
+  align-items: stretch;
   position: relative;
   z-index: 10;
 }
 
 .search-input-wrapper {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   background: rgba(30, 36, 56, 0.9);
@@ -764,7 +765,6 @@ table tr:focus-within {
   backdrop-filter: blur(10px);
   position: relative;
   z-index: 10;
-  pointer-events: auto;
 }
 
 .search-input-wrapper:focus-within {
@@ -783,6 +783,8 @@ table tr:focus-within {
 
 .search-input {
   flex: 1;
+  min-width: 0;
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
@@ -790,9 +792,6 @@ table tr:focus-within {
   font-size: 15px;
   color: var(--text-primary);
   font-family: inherit;
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
   cursor: text;
 }
 
@@ -801,29 +800,28 @@ table tr:focus-within {
 }
 
 .search-engine-select {
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 13px;
+  background: rgba(30, 36, 56, 0.9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 14px;
   color: var(--text-primary);
   cursor: pointer;
   outline: none;
   transition: all var(--transition-fast);
   font-family: inherit;
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .search-engine-select:hover {
-  background: rgba(139, 92, 246, 0.15);
   border-color: var(--primary);
+  background: rgba(30, 36, 56, 1);
 }
 
 .search-engine-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 .search-btn {
@@ -838,9 +836,7 @@ table tr:focus-within {
   transition: all var(--transition-fast);
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
+  flex-shrink: 0;
 }
 
 .search-btn:hover {
@@ -1427,9 +1423,14 @@ table tr:focus-within {
   
   .search-form {
     flex-direction: column;
+    gap: 10px;
   }
   
   .search-input-wrapper {
+    width: 100%;
+  }
+  
+  .search-engine-select {
     width: 100%;
   }
   
