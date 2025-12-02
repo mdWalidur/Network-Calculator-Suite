@@ -423,11 +423,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const searchEngine = document.getElementById("searchEngine");
   
-  if (searchForm) {
+  console.log("Search elements:", { searchForm, searchInput, searchEngine });
+  
+  if (searchForm && searchInput && searchEngine) {
     searchForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      console.log("Search form submitted");
+      
       const query = searchInput.value.trim();
-      if (!query) return;
+      console.log("Search query:", query);
+      
+      if (!query) {
+        alert("Please enter a search query");
+        return;
+      }
       
       const engines = {
         google: "https://www.google.com/search?q=",
@@ -438,7 +447,25 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const selectedEngine = searchEngine.value;
       const searchUrl = engines[selectedEngine] + encodeURIComponent(query);
+      console.log("Opening URL:", searchUrl);
+      
       window.open(searchUrl, "_blank");
+      searchInput.value = ""; // Clear the input after search
+    });
+    
+    // Also add click handler for the search button
+    const searchBtn = document.querySelector(".search-btn");
+    if (searchBtn) {
+      searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        searchForm.dispatchEvent(new Event("submit"));
+      });
+    }
+  } else {
+    console.error("Search elements not found:", { 
+      form: !!searchForm, 
+      input: !!searchInput, 
+      engine: !!searchEngine 
     });
   }
   
