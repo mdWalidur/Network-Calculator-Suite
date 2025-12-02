@@ -426,6 +426,25 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Search elements:", { searchForm, searchInput, searchEngine });
   
   if (searchForm && searchInput && searchEngine) {
+    // Make input focusable by clicking wrapper
+    const searchWrapper = document.querySelector(".search-input-wrapper");
+    if (searchWrapper) {
+      searchWrapper.addEventListener("click", (e) => {
+        if (e.target !== searchInput) {
+          searchInput.focus();
+        }
+      });
+    }
+    
+    // Test input functionality
+    searchInput.addEventListener("focus", () => {
+      console.log("Search input focused");
+    });
+    
+    searchInput.addEventListener("input", (e) => {
+      console.log("Input value:", e.target.value);
+    });
+    
     searchForm.addEventListener("submit", (e) => {
       e.preventDefault();
       console.log("Search form submitted");

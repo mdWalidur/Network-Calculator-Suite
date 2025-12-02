@@ -779,20 +779,30 @@ table tr:focus-within {
   color: var(--text-muted);
   flex-shrink: 0;
   margin-right: 12px;
+  pointer-events: none;
 }
 
 .search-input {
   flex: 1;
   min-width: 0;
   width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
   padding: 16px 0;
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-family: inherit;
-  cursor: text;
+  cursor: text !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-input:focus {
+  color: var(--text-primary) !important;
+  background: transparent !important;
 }
 
 .search-input::placeholder {
