@@ -740,25 +740,31 @@ table tr:focus-within {
   max-width: 700px;
   margin: 0 auto;
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .search-form {
   display: flex;
   gap: 12px;
   align-items: center;
+  position: relative;
+  z-index: 10;
 }
 
 .search-input-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
-  background: rgba(30, 36, 56, 0.6);
+  background: rgba(30, 36, 56, 0.9);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0 20px;
   transition: all var(--transition);
   backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .search-input-wrapper:focus-within {
@@ -784,6 +790,10 @@ table tr:focus-within {
   font-size: 15px;
   color: var(--text-primary);
   font-family: inherit;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: text;
 }
 
 .search-input::placeholder {
@@ -801,6 +811,9 @@ table tr:focus-within {
   outline: none;
   transition: all var(--transition-fast);
   font-family: inherit;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .search-engine-select:hover {
@@ -825,6 +838,9 @@ table tr:focus-within {
   transition: all var(--transition-fast);
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .search-btn:hover {
