@@ -1,9 +1,9 @@
 const { test, expect } = require('@playwright/test');
 
 // NOTE: Start a static server in project root before running tests:
-// python -m http.server 8000
+// npx serve . or python -m http.server 8000
 
-const BASE = 'http://localhost:8000';
+const BASE = process.env.TEST_BASE_URL || 'http://localhost:8000';
 
 test('help modal opens and closes', async ({ page }) => {
   await page.goto(BASE + '/index.html');
@@ -15,9 +15,9 @@ test('help modal opens and closes', async ({ page }) => {
 
 test('tabs keyboard navigation and activation', async ({ page }) => {
   await page.goto(BASE + '/index.html');
-  const tabs = page.locator('.tab');
-  await tabs.nth(1).focus();
-  await tabs.nth(1).press('Enter');
+  const ipv6Tab = page.locator('.tab[data-tab="ipv6"]');
+  await ipv6Tab.focus();
+  await ipv6Tab.press('Enter');
   await expect(page.locator('#ipv6')).toBeVisible();
 });
 

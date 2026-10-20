@@ -37,6 +37,10 @@
   
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --primary-gold: #fbbf24;
+  --primary-blue: #38bdf8;
 }
 
 /* ============================================
@@ -281,11 +285,6 @@ body {
   display: none;
 }
 
-/* Hide header on home page */
-.top-bar.home-hidden {
-  display: none;
-}
-
 .page-title {
   font-size: 32px;
   font-weight: 800;
@@ -343,6 +342,23 @@ body:has(#home[style*="display:block"]) .header-actions {
 }
 
 .main-footer a:hover {
+  color: var(--text-primary);
+}
+
+.main-footer .footer-link {
+  background: none;
+  border: none;
+  color: var(--accent-indigo);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.main-footer .footer-link:hover {
   color: var(--text-primary);
 }
 
@@ -1619,7 +1635,4 @@ table tr:focus-within {
     font-size: 14px;
   }
 }
-
-/* Logo sizing: keep logo small inside sidebar */
-
 
