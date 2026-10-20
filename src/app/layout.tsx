@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#070714",
+  themeColor: "#f8fafc",
   width: "device-width",
   initialScale: 1,
 };
@@ -23,24 +23,24 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://networkcalculatorsuite.com"),
   title: {
-    default: "Network Calculator Suite | Enterprise Subnetting & Architecture",
+    default: "Network Calculator Suite | Professional IP Subnetting & Engineering Tools",
     template: "%s | Network Calculator Suite",
   },
   description:
-    "Flagship 3D interactive networking suite. Real-time IPv4/IPv6 subnetting, automated VLSM allocation, route aggregation, bit-level binary breakdown, and Cisco/Juniper ACL wildcard helpers with zero latency.",
+    "Professional, fast, client-side network engineering suite. Instant IPv4 subnetting, RFC 5952 IPv6 calculation, VLSM capacity planning, CIDR route summarization, and binary bit analysis.",
   keywords: [
-    "network calculator",
     "subnet calculator",
+    "network calculator",
     "ipv4 subnetting",
     "ipv6 calculator",
     "vlsm calculator",
+    "cidr calculator",
     "route summarization",
     "supernetting",
-    "cidr calculator",
-    "network architecture",
+    "cisco subnet calculator",
+    "binary ip calculator",
     "rfc 1918",
     "rfc 5952",
-    "acl wildcard generator",
   ],
   authors: [{ name: "Md Walidur Rahman" }],
   creator: "Md Walidur Rahman",
@@ -53,23 +53,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://networkcalculatorsuite.com",
     siteName: "Network Calculator Suite",
-    title: "Network Calculator Suite | Enterprise Subnetting & Architecture",
+    title: "Network Calculator Suite | Professional IP Subnetting & Engineering Tools",
     description:
-      "Flagship 3D interactive networking suite. Real-time IPv4/IPv6 subnetting, automated VLSM allocation, route aggregation, and bit-level binary visualization.",
+      "Precise, client-side networking utilities for network engineers, IT professionals, and students. IPv4/IPv6, VLSM, CIDR summarization, and binary breakdown.",
     images: [
       {
         url: "/logo.svg",
         width: 1200,
         height: 630,
-        alt: "Network Calculator Suite 3D Topology Preview",
+        alt: "Network Calculator Suite Application",
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Network Calculator Suite | Flagship 3D Subnetting Platform",
+    card: "summary",
+    title: "Network Calculator Suite | Professional IP Subnetting & Engineering Tools",
     description:
-      "Real-time IPv4/IPv6 subnetting, automated VLSM allocation, route aggregation, and bit-level binary visualization with zero latency.",
+      "Precise, client-side networking utilities for network engineers and IT professionals. Instant calculations with zero telemetry.",
     images: ["/logo.svg"],
   },
   robots: {
@@ -95,7 +95,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Comprehensive JSON-LD structured data for search engine rich results
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -104,14 +103,14 @@ export default function RootLayout({
         "@id": "https://networkcalculatorsuite.com/#website",
         url: "https://networkcalculatorsuite.com",
         name: "Network Calculator Suite",
-        description: "Enterprise Subnetting, IPv6, VLSM & Route Summarization Platform",
+        description: "Professional IP Subnetting, VLSM Planning, and CIDR Engineering Suite",
         inLanguage: "en-US",
       },
       {
         "@type": "SoftwareApplication",
         name: "Network Calculator Suite",
-        applicationCategory: "DeveloperApplication, NetworkUtility",
-        operatingSystem: "All (Web-based)",
+        applicationCategory: "NetworkUtility, DeveloperApplication",
+        operatingSystem: "All (Modern Web Browsers)",
         offers: {
           "@type": "Offer",
           price: "0",
@@ -120,26 +119,24 @@ export default function RootLayout({
         author: {
           "@type": "Person",
           name: "Md Walidur Rahman",
-          jobTitle: "IT Expert & Network Engineer",
         },
         description:
-          "Professional subnetting and network architecture suite providing IPv4 CIDR division, RFC 5952 IPv6 compression, VLSM planning, route aggregation, and binary visualization.",
+          "High-precision, client-side IP subnet calculator providing IPv4 CIDR division, RFC 5952 IPv6 compression, VLSM multi-subnet planning, route aggregation, and binary bit visualization.",
       },
     ],
   };
 
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground selection:bg-brand-purple/30 selection:text-white`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-workspace-50 text-workspace-900 min-h-screen flex flex-col`}>
         {children}
       </body>
     </html>
   );
 }
-

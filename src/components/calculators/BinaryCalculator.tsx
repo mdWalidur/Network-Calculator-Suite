@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { calculateBinary, BinaryBreakdown } from "@/lib/calculator";
-import { Binary, Copy, Check, AlertCircle } from "lucide-react";
+import { Copy, Check, AlertCircle } from "lucide-react";
 
 export function BinaryCalculator() {
   const [ipInput, setIpInput] = useState("192.168.1.10");
@@ -15,189 +15,248 @@ export function BinaryCalculator() {
     }
   });
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const handleCalculate = () => {
+  const ipInputId = useId();
+  const prefixId = useId();
+
+  const handleCalculate = (ip = ipInput, p = prefix) => {
     setError(null);
     try {
-      const res = calculateBinary(ipInput, prefix);
+      const res = calculateBinary(ip, p);
       setResult(res);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Error generating binary breakdown");
+        setError("Error generating binary representation. Check IP address.");
       }
       setResult(null);
     }
   };
 
-  const handleCopy = () => {
-    if (!result) return;
-    const text = [
-      "=== Binary Visualization Breakdown ===",
-      `IP Address: ${result.ip}`,
-      `Network: ${result.network}`,
-      `Subnet Mask: ${result.mask}`,
-      `Wildcard: ${result.wildcard}`,
-      ...result.octets.map((o) => `Octet ${o.octetIndex} (${o.value}): ${o.binaryString}`),
-    ].join("\n");
+  const handlePreset = (ip: string, p: number) => {
+    setIpInput(ip);
+    setPrefix(p);
+    handleCalculate(ip, p);
+  };
+
+  const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedKey(key);
+    setStatusMessage(`Copied to clipboard.`);
+    setTimeout(() => {
+      setCopiedKey(null);
+      setStatusMessage(null);
+    }, 2000);
   };
 
   return (
-    <div className="space-y-8">
-      {/* Input Parameters */}
-      <div className="glass-card rounded-2xl p-6 md:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+    <div className="space-y-6">
+      <div className="sr-only" role="status" aria-live="polite">
+        {statusMessage}
+      </div>
+
+      {/* Input Configuration Panel */}
+      <section aria-labelledby="binary-input-heading" className="panel p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-workspace-200 gap-3">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Binary className="w-5 h-5 text-amber-400" />
-              Binary Bit-Level Visualization
-            </h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Visualize exact bit boundaries, distinguishing network bits from host bits.
+            <h2 id="binary-input-heading" className="text-base font-bold text-slate-900">
+              Binary Bit Breakdown & Subnet Boundary
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Visualize exact 32-bit boundaries, bit positional powers of 2, and network vs host bit distribution.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* Quick Presets */}
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-slate-500 font-medium">Presets:</span>
             <button
-              onClick={handleCalculate}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-md"
+              type="button"
+              onClick={() => handlePreset("192.168.1.10", 24)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
             >
-              Visualize
+              Class C /24
             </button>
             <button
-              onClick={handleCopy}
-              disabled={!result}
-              className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-sm transition-all disabled:opacity-40 flex items-center gap-2"
+              type="button"
+              onClick={() => handlePreset("10.50.100.1", 19)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              <span>{copied ? "Copied" : "Copy"}</span>
+              Non-Octet /19
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePreset("172.16.5.1", 30)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
+            >
+              P2P Link /30
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-400" />
-            <span>{error}</span>
+          <div role="alert" className="mt-4 p-3.5 rounded-md bg-red-50 border border-red-200 text-red-800 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-semibold">Input Error: </strong>
+              <span>{error}</span>
+            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCalculate();
+          }}
+          className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <label htmlFor={ipInputId} className="block text-xs font-semibold text-slate-700 mb-1.5">
               IPv4 Address
             </label>
             <input
+              id={ipInputId}
               type="text"
               value={ipInput}
-              onChange={(e) => setIpInput(e.target.value)}
-              placeholder="e.g., 192.168.1.10"
-              className="w-full px-4 py-3 rounded-xl glass-input font-mono text-sm"
+              onChange={(e) => {
+                setIpInput(e.target.value);
+                handleCalculate(e.target.value, prefix);
+              }}
+              placeholder="e.g. 192.168.1.10"
+              className="eng-input font-mono"
             />
+            <span className="text-[11px] text-slate-500 mt-1 block">Standard dotted decimal IP address</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Prefix Length
+            <label htmlFor={prefixId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Subnet Prefix Length
             </label>
             <select
+              id={prefixId}
               value={prefix}
-              onChange={(e) => setPrefix(Number(e.target.value))}
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
+              onChange={(e) => {
+                const nextP = Number(e.target.value);
+                setPrefix(nextP);
+                handleCalculate(ipInput, nextP);
+              }}
+              className="eng-input font-mono"
             >
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((p) => (
-                <option key={p} value={p} className="bg-slate-900 text-white">
-                  /{p}
+              {Array.from({ length: 33 }, (_, i) => i).map((p) => (
+                <option key={p} value={p}>
+                  /{p} ({p} Network bits • {32 - p} Host bits)
                 </option>
               ))}
             </select>
+            <span className="text-[11px] text-slate-500 mt-1 block">Boundary between network & host bits</span>
           </div>
-        </div>
-      </div>
+        </form>
+      </section>
 
-      {/* Bit Matrix Output */}
+      {/* Results Workspace */}
       {result && (
         <div className="space-y-6">
-          {/* Metadata Top Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-brand-purple">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Network Address
-              </span>
-              <span className="text-xl font-bold font-mono text-white mt-1 block">
-                {result.network}
-              </span>
+          {/* Key Address Metrics Bar */}
+          <section aria-label="Binary Parameters Overview" className="panel p-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div className="space-y-1">
+                <span className="text-slate-500 font-medium block">Decimal IP Address</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.ip}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-slate-500 font-medium block">Subnet Network</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.network}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-slate-500 font-medium block">Subnet Mask</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.mask}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-slate-500 font-medium block">Wildcard Mask</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.wildcard}
+                </span>
+              </div>
             </div>
 
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-brand-cyan">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Subnet Mask
-              </span>
-              <span className="text-xl font-bold font-mono text-cyan-300 mt-1 block">
-                {result.mask}
-              </span>
-            </div>
+            {/* Legend & Count */}
+            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-xs bg-blue-700 border border-blue-800 inline-block" />
+                  <span className="text-slate-700 font-medium">Network Bit ({result.prefix} bits)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-xs bg-slate-200 border border-slate-300 inline-block" />
+                  <span className="text-slate-700 font-medium">Host Bit ({32 - result.prefix} bits)</span>
+                </div>
+              </div>
 
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Wildcard Mask
-              </span>
-              <span className="text-xl font-bold font-mono text-amber-300 mt-1 block">
-                {result.wildcard}
-              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const binFull = result.octets.map((o) => o.binaryString).join(".");
+                  copyToClipboard(binFull, "binary-string");
+                }}
+                className="btn-copy"
+                title="Copy Full 32-bit Binary String"
+              >
+                {copiedKey === "binary-string" ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-slate-500" />}
+                <span>{copiedKey === "binary-string" ? "Copied" : "Copy 32-Bit String"}</span>
+              </button>
             </div>
-          </div>
+          </section>
 
-          {/* Legend */}
-          <div className="flex items-center gap-6 text-xs font-semibold px-2">
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-3.5 rounded bg-amber-400 inline-block shadow-sm" />
-              <span className="text-slate-300">Network Bit (Prefix)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-3.5 rounded bg-cyan-400 inline-block shadow-sm" />
-              <span className="text-slate-300">Host Bit</span>
-            </div>
-          </div>
-
-          {/* Octet Cards */}
+          {/* 4 Octets Visual Matrix */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {result.octets.map((oct) => (
-              <div
+              <section
                 key={oct.octetIndex}
-                className="glass-card rounded-2xl p-5 space-y-3 border border-white/10"
+                aria-label={`Octet ${oct.octetIndex}`}
+                className="panel p-4 space-y-3"
               >
-                <div className="flex justify-between items-center text-xs border-b border-white/5 pb-2">
-                  <span className="font-semibold text-slate-400 uppercase tracking-wider">
+                <div className="flex justify-between items-center text-xs pb-2 border-b border-slate-100">
+                  <span className="font-bold uppercase tracking-wider text-slate-600">
                     Octet {oct.octetIndex}
                   </span>
-                  <span className="font-mono font-bold text-white text-sm">
-                    {oct.value} (Dec)
-                  </span>
+                  <div className="font-mono text-xs">
+                    <span className="text-slate-500">Decimal: </span>
+                    <strong className="text-slate-900 font-bold">{oct.value}</strong>
+                    <span className="text-slate-400 mx-1">•</span>
+                    <span className="text-slate-500">Hex: </span>
+                    <strong className="text-slate-900 font-bold">0x{oct.value.toString(16).toUpperCase().padStart(2, "0")}</strong>
+                  </div>
                 </div>
 
-                <div className="flex justify-between gap-1 sm:gap-2">
+                {/* 8 Bits Table */}
+                <div className="grid grid-cols-8 gap-1 text-center font-mono">
                   {oct.bits.map((b, i) => (
                     <div
                       key={i}
-                      className={`flex-1 flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all ${
+                      className={`py-2 px-1 rounded border text-center transition-colors ${
                         b.isNetwork
-                          ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                          : "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                          ? "bg-blue-50 border-blue-300 text-blue-900"
+                          : "bg-slate-50 border-slate-200 text-slate-700"
                       }`}
                     >
-                      <span className="font-mono text-base font-extrabold">{b.bit}</span>
-                      <span className="text-[10px] text-slate-500 font-mono mt-0.5">
-                        2^{7 - i}
+                      <span className="text-sm font-bold block">{b.bit}</span>
+                      <span className="text-[10px] text-slate-500 block mt-0.5">
+                        {Math.pow(2, 7 - i)}
                       </span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             ))}
           </div>
         </div>
@@ -205,4 +264,3 @@ export function BinaryCalculator() {
     </div>
   );
 }
-

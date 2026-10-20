@@ -1,25 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  calculateIPv4,
-  wildcardFromMask,
-  IPv4CalculationResult,
-} from "@/lib/calculator";
-import { Download, Copy, Check, AlertCircle, Network, Layers, ShieldCheck } from "lucide-react";
-import confetti from "canvas-confetti";
+import React, { useState, useId } from "react";
+import { calculateIPv4, IPv4CalculationResult } from "@/lib/calculator";
+import { Copy, Check, Download, AlertCircle, RefreshCw } from "lucide-react";
 
 export function IPv4Calculator() {
-  const [baseNet, setBaseNet] = useState("192.168.0.0");
+  const [baseIp, setBaseIp] = useState("192.168.0.0");
   const [basePrefix, setBasePrefix] = useState(24);
   const [desiredPrefix, setDesiredPrefix] = useState(26);
-  const [hostReq, setHostReq] = useState("50");
-  const [vlanId, setVlanId] = useState("");
-  const [vlanName, setVlanName] = useState("");
   const [gatewayPref, setGatewayPref] = useState<"first" | "last">("first");
-  const [aclMask, setAclMask] = useState("255.255.255.192");
-  const [aclWildcard, setAclWildcard] = useState("");
-  const [vlanNotes, setVlanNotes] = useState("");
 
   const [result, setResult] = useState<IPv4CalculationResult | null>(() => {
     try {
@@ -28,39 +17,59 @@ export function IPv4Calculator() {
       return null;
     }
   });
+
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const handleBasePrefixChange = (val: number) => {
-    setBasePrefix(val);
-    if (desiredPrefix < val) {
-      setDesiredPrefix(Math.min(30, val + 2));
-    }
-  };
+  // Form IDs for accessibility
+  const baseIpId = useId();
+  const basePrefixId = useId();
+  const desiredPrefixId = useId();
+  const gatewayPrefId = useId();
 
-  const handleCalculate = () => {
+  const handleCalculate = (ip = baseIp, bPrefix = basePrefix, dPrefix = desiredPrefix, gPref = gatewayPref) => {
     setError(null);
     try {
-      const res = calculateIPv4(baseNet, basePrefix, desiredPrefix, gatewayPref);
+      const res = calculateIPv4(ip, bPrefix, dPrefix, gPref);
       setResult(res);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("An unexpected error occurred during calculation");
+        setError("Invalid IPv4 address or subnet prefix parameters.");
       }
       setResult(null);
     }
   };
 
+  const handlePreset = (ip: string, bPrefix: number, dPrefix: number, gPref: "first" | "last" = "first") => {
+    setBaseIp(ip);
+    setBasePrefix(bPrefix);
+    setDesiredPrefix(dPrefix);
+    setGatewayPref(gPref);
+    handleCalculate(ip, bPrefix, dPrefix, gPref);
+  };
+
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setStatusMessage(`Copied "${text}" to clipboard.`);
+    setTimeout(() => {
+      setCopiedKey(null);
+      setStatusMessage(null);
+    }, 2000);
+  };
+
   const handleExportCSV = () => {
     if (!result) return;
     const rows = [
-      ["#", "Network", "Prefix", "First Usable", "Last Usable", "Broadcast", "Gateway"],
+      ["Subnet #", "Network Address", "Prefix", "Subnet Mask", "First Usable Host", "Last Usable Host", "Broadcast Address", "Default Gateway"],
       ...result.ranges.map((r) => [
         r.id.toString(),
         r.network,
         `/${r.prefix}`,
+        result.mask,
         r.firstUsable,
         r.lastUsable,
         r.broadcast,
@@ -72,377 +81,396 @@ export function IPv4Calculator() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `ipv4-subnetting-${result.cidr.replace("/", "_")}.csv`);
+    link.setAttribute("download", `subnet-plan-${result.cidr.replace("/", "_")}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-
-    confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+    setStatusMessage("CSV file generated and downloaded.");
+    setTimeout(() => setStatusMessage(null), 3000);
   };
 
   const handleCopySummary = () => {
     if (!result) return;
-    const text = [
-      "=== IPv4 Subnetting Summary ===",
+    const lines = [
+      "=== IPv4 Subnet Allocation Summary ===",
       `Base CIDR: ${result.cidr}`,
-      `Subnet Mask: ${result.mask}`,
-      `Wildcard Mask: ${result.wildcard}`,
-      `Subnets Created: ${result.totalSubnets.toLocaleString()}`,
+      `Subnet Mask: ${result.mask} (Wildcard: ${result.wildcard})`,
+      `Classification: ${result.ipClass} (${result.isPrivate ? "RFC 1918 Private" : "Public Internet"})`,
+      `Subnets Created: ${result.numSubnets}`,
       `Usable Hosts per Subnet: ${result.usableHosts.toLocaleString()}`,
-      `IP Class: ${result.ipClass} (${result.isPrivate ? "Private RFC 1918" : "Public"})`,
-      `DHCP Scope: ${result.dhcpScope} addresses`,
-    ].join("\n");
-
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleGenerateAcl = () => {
-    try {
-      const parts = aclMask.trim().split(".").map(Number);
-      if (parts.length !== 4 || parts.some((p) => isNaN(p) || p < 0 || p > 255)) {
-        throw new Error("Invalid subnet mask format");
-      }
-      const wc = parts.map((p) => 255 - p).join(".");
-      setAclWildcard(wc);
-    } catch (e: unknown) {
-      if (e instanceof Error) alert(e.message);
-    }
+      "",
+      "#\tSubnet Network\tFirst Usable\tLast Usable\tBroadcast\tGateway",
+      ...result.ranges.map(
+        (r) => `${r.id}\t${r.network}\t${r.firstUsable}\t${r.lastUsable}\t${r.broadcast}\t${r.gateway}`
+      ),
+    ];
+    copyToClipboard(lines.join("\n"), "full-summary");
   };
 
   return (
-    <div className="space-y-8">
-      {/* Input Parameters Form */}
-      <div className="glass-card rounded-2xl p-6 md:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+    <div className="space-y-6">
+      {/* Screen Reader Status Announcement */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {statusMessage}
+      </div>
+
+      {/* Input Configuration Panel */}
+      <section aria-labelledby="ipv4-input-heading" className="panel p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-workspace-200 gap-3">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <Network className="w-5 h-5 text-brand-purple" />
-              IPv4 Subnet Configuration
-            </h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Configure root network and target mask for automated CIDR division.
+            <h2 id="ipv4-input-heading" className="text-base font-bold text-slate-900">
+              IPv4 Network Configuration
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Enter network address and prefix to compute subnets, ranges, masks, and ACL wildcards.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* Quick Presets */}
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-slate-500 font-medium">Presets:</span>
             <button
-              onClick={handleCalculate}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-purple to-brand-indigo hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm transition-all shadow-glow-purple flex items-center gap-2"
+              type="button"
+              onClick={() => handlePreset("192.168.0.0", 24, 26)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
             >
-              Calculate
+              192.168.0.0/24 → /26
             </button>
             <button
-              onClick={handleExportCSV}
-              disabled={!result}
-              className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-              title="Export as CSV"
+              type="button"
+              onClick={() => handlePreset("10.0.0.0", 16, 24)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
             >
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Export CSV</span>
+              10.0.0.0/16 → /24
             </button>
             <button
-              onClick={handleCopySummary}
-              disabled={!result}
-              className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-              title="Copy Summary"
+              type="button"
+              onClick={() => handlePreset("172.16.0.0", 24, 30)}
+              className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] transition-colors"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+              P2P /30 Links
             </button>
           </div>
         </div>
 
+        {/* Validation Error Banner */}
         {error && (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-400" />
-            <span>{error}</span>
+          <div role="alert" className="mt-4 p-3.5 rounded-md bg-red-50 border border-red-200 text-red-800 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-semibold">Calculation Error: </strong>
+              <span>{error}</span>
+            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Input Controls Grid */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCalculate();
+          }}
+          className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Base Network (IPv4)
+            <label htmlFor={baseIpId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Base Network IP
             </label>
             <input
+              id={baseIpId}
               type="text"
-              value={baseNet}
-              onChange={(e) => setBaseNet(e.target.value)}
-              placeholder="e.g., 192.168.0.0"
-              className="w-full px-4 py-3 rounded-xl glass-input font-mono text-sm"
+              value={baseIp}
+              onChange={(e) => {
+                setBaseIp(e.target.value);
+                handleCalculate(e.target.value, basePrefix, desiredPrefix, gatewayPref);
+              }}
+              placeholder="e.g. 192.168.1.0"
+              className="eng-input font-mono"
+              autoComplete="off"
+              spellCheck={false}
             />
+            <span className="text-[11px] text-slate-500 mt-1 block">Valid IPv4 decimal notation</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Base Prefix
+            <label htmlFor={basePrefixId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Base Prefix Length
             </label>
             <select
+              id={basePrefixId}
               value={basePrefix}
-              onChange={(e) => handleBasePrefixChange(Number(e.target.value))}
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
+              onChange={(e) => {
+                const nextBase = Number(e.target.value);
+                setBasePrefix(nextBase);
+                const nextDesired = desiredPrefix < nextBase ? nextBase : desiredPrefix;
+                setDesiredPrefix(nextDesired);
+                handleCalculate(baseIp, nextBase, nextDesired, gatewayPref);
+              }}
+              className="eng-input font-mono"
             >
-              {Array.from({ length: 23 }, (_, i) => i + 8).map((p) => (
-                <option key={p} value={p} className="bg-slate-900 text-white">
+              {Array.from({ length: 33 }, (_, i) => i).map((p) => (
+                <option key={p} value={p}>
                   /{p} {p === 8 ? "(Class A)" : p === 16 ? "(Class B)" : p === 24 ? "(Class C)" : ""}
                 </option>
               ))}
             </select>
+            <span className="text-[11px] text-slate-500 mt-1 block">Root network prefix (/0 to /32)</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Desired Subnet Prefix
+            <label htmlFor={desiredPrefixId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Target Subnet Prefix
             </label>
             <select
+              id={desiredPrefixId}
               value={desiredPrefix}
-              onChange={(e) => setDesiredPrefix(Number(e.target.value))}
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
+              onChange={(e) => {
+                const nextDesired = Number(e.target.value);
+                setDesiredPrefix(nextDesired);
+                handleCalculate(baseIp, basePrefix, nextDesired, gatewayPref);
+              }}
+              className="eng-input font-mono"
             >
-              {Array.from({ length: 31 - basePrefix }, (_, i) => i + basePrefix).map((p) => (
-                <option key={p} value={p} className="bg-slate-900 text-white">
-                  /{p}
-                </option>
-              ))}
+              {Array.from({ length: 33 - basePrefix }, (_, i) => basePrefix + i).map((p) => {
+                const subnets = Math.pow(2, p - basePrefix);
+                const hosts = p === 32 ? 1 : p === 31 ? 2 : Math.max(0, Math.pow(2, 32 - p) - 2);
+                return (
+                  <option key={p} value={p}>
+                    /{p} ({subnets} subnets • {hosts.toLocaleString()} hosts)
+                  </option>
+                );
+              })}
             </select>
+            <span className="text-[11px] text-slate-500 mt-1 block">Subdivided prefix length</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Gateway Convention
+            <label htmlFor={gatewayPrefId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Default Gateway
             </label>
             <select
+              id={gatewayPrefId}
               value={gatewayPref}
-              onChange={(e) => setGatewayPref(e.target.value as "first" | "last")}
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
+              onChange={(e) => {
+                const nextG = e.target.value as "first" | "last";
+                setGatewayPref(nextG);
+                handleCalculate(baseIp, basePrefix, desiredPrefix, nextG);
+              }}
+              className="eng-input"
             >
-              <option value="first" className="bg-slate-900 text-white">
-                First Usable (.1)
-              </option>
-              <option value="last" className="bg-slate-900 text-white">
-                Last Usable (.254)
-              </option>
+              <option value="first">First Usable IP (.1 convention)</option>
+              <option value="last">Last Usable IP (.254 convention)</option>
             </select>
+            <span className="text-[11px] text-slate-500 mt-1 block">Gateway allocation rule</span>
           </div>
-        </div>
+        </form>
+      </section>
 
-        {/* Optional VLAN Metadata */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              VLAN ID (Optional)
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="4094"
-              value={vlanId}
-              onChange={(e) => setVlanId(e.target.value)}
-              placeholder="e.g., 10"
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              VLAN Name (Optional)
-            </label>
-            <input
-              type="text"
-              maxLength={32}
-              value={vlanName}
-              onChange={(e) => setVlanName(e.target.value)}
-              placeholder="e.g., MGMT-PROD"
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Target Hosts Required
-            </label>
-            <input
-              type="number"
-              min="1"
-              value={hostReq}
-              onChange={(e) => setHostReq(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl glass-input text-sm"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Results KPIs and Grid */}
+      {/* Results Workspace */}
       {result && (
         <div className="space-y-6">
-          {/* KPI Dashboard */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-brand-purple">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Usable Hosts / Subnet
-              </span>
-              <span className="text-2xl lg:text-3xl font-extrabold text-white mt-1 block">
-                {result.usableHosts.toLocaleString()}
-              </span>
-              <span className="text-xs text-slate-500 font-mono mt-1 block">
-                2^{result.hostBits} − 2 hosts
-              </span>
+          {/* Key Parameters Overview Bar */}
+          <section aria-label="Calculated Subnet Summary" className="panel p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+                  Computed Network Block
+                </span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xl font-bold font-mono text-slate-900">
+                    {result.cidr}
+                  </span>
+                  <span className={`text-xs px-2 py-0.5 rounded font-medium border ${
+                    result.isPrivate
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-blue-50 text-blue-700 border-blue-200"
+                  }`}>
+                    {result.ipClass} • {result.isPrivate ? "RFC 1918 Private" : "Public Address"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleExportCSV}
+                  className="btn-secondary"
+                  title="Download subnet plan as CSV"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Export CSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopySummary}
+                  className="btn-secondary"
+                  title="Copy full text summary to clipboard"
+                >
+                  {copiedKey === "full-summary" ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-slate-500" />
+                  )}
+                  <span>{copiedKey === "full-summary" ? "Copied" : "Copy Summary"}</span>
+                </button>
+              </div>
             </div>
 
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-brand-cyan">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Number of Subnets
-              </span>
-              <span className="text-2xl lg:text-3xl font-extrabold text-white mt-1 block">
-                {result.numSubnets.toLocaleString()}
-              </span>
-              <span className="text-xs text-slate-500 font-mono mt-1 block">
-                2^{result.subnetBits} subnets
-              </span>
-            </div>
+            {/* Structured Metric Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-xs">
+              <div className="space-y-1">
+                <span className="text-slate-500 block font-medium">Subnet Mask</span>
+                <div className="flex items-center gap-1.5 font-mono font-bold text-slate-900 text-sm">
+                  <span>{result.mask}</span>
+                  <button
+                    onClick={() => copyToClipboard(result.mask, "mask")}
+                    className="text-slate-400 hover:text-slate-700 p-0.5"
+                    title="Copy Subnet Mask"
+                    aria-label="Copy Subnet Mask"
+                  >
+                    {copiedKey === "mask" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
 
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-brand-sky">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Subnet Mask
-              </span>
-              <span className="text-lg lg:text-xl font-bold font-mono text-cyan-300 mt-1 block">
-                {result.mask}
-              </span>
-              <span className="text-xs text-slate-400 font-mono mt-1 block">
-                WC: {result.wildcard}
-              </span>
-            </div>
+              <div className="space-y-1">
+                <span className="text-slate-500 block font-medium">Wildcard Mask</span>
+                <div className="flex items-center gap-1.5 font-mono font-bold text-slate-900 text-sm">
+                  <span>{result.wildcard}</span>
+                  <button
+                    onClick={() => copyToClipboard(result.wildcard, "wildcard")}
+                    className="text-slate-400 hover:text-slate-700 p-0.5"
+                    title="Copy Wildcard Mask"
+                    aria-label="Copy Wildcard Mask"
+                  >
+                    {copiedKey === "wildcard" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
 
-            <div className="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500">
-              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">
-                Scope & Classification
-              </span>
-              <span className="text-lg lg:text-xl font-bold text-white mt-1 block">
-                {result.ipClass}
-              </span>
-              <span className="text-xs text-amber-400 font-medium mt-1 block">
-                {result.isPrivate ? "Private (RFC 1918)" : "Public IP"}
-              </span>
-            </div>
-          </div>
+              <div className="space-y-1">
+                <span className="text-slate-500 block font-medium">Usable Hosts / Subnet</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.usableHosts.toLocaleString()}
+                  <span className="text-slate-500 font-normal text-xs ml-1 font-sans">
+                    (2^{result.hostBits}{result.desiredPrefix <= 30 ? " - 2" : ""})
+                  </span>
+                </span>
+              </div>
 
-          {/* Warning Banner if Truncated */}
-          {result.truncated && (
-            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm flex items-center justify-between">
-              <span>
-                Displaying first {result.ranges.length} of {result.totalSubnets.toLocaleString()} generated subnets. Export CSV to view the full allocation table.
-              </span>
-              <button
-                onClick={handleExportCSV}
-                className="underline font-semibold hover:text-white ml-3"
-              >
-                Download CSV
-              </button>
+              <div className="space-y-1">
+                <span className="text-slate-500 block font-medium">Subnets Created</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">
+                  {result.numSubnets.toLocaleString()}
+                  <span className="text-slate-500 font-normal text-xs ml-1 font-sans">
+                    (2^{result.subnetBits})
+                  </span>
+                </span>
+              </div>
             </div>
-          )}
+          </section>
 
-          {/* Subnet Ranges Table */}
-          <div className="glass-card rounded-2xl p-6 overflow-hidden">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="text-base font-bold text-white flex items-center gap-2">
-                <Layers className="w-4 h-4 text-brand-cyan" />
-                Subnet Allocation Table
-              </h4>
-              <span className="text-xs font-mono text-slate-400">
-                CIDR: {result.cidr}
-              </span>
+          {/* Subnet Allocation Table */}
+          <section aria-labelledby="allocation-table-heading" className="panel overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-workspace-200 flex items-center justify-between">
+              <div>
+                <h3 id="allocation-table-heading" className="text-sm font-bold text-slate-900">
+                  Subnet Allocation Matrix
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Showing {result.ranges.length} calculated subnet {result.ranges.length === 1 ? "block" : "blocks"}
+                  {result.truncated && ` (display truncated to 256 of ${result.totalSubnets.toLocaleString()} subnets for browser performance)`}.
+                </p>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs md:text-sm">
+              <table className="eng-table">
                 <thead>
-                  <tr className="border-b border-white/10 text-slate-400 uppercase tracking-wider text-[11px]">
-                    <th className="py-3 px-3">#</th>
-                    <th className="py-3 px-3 font-semibold">Network</th>
-                    <th className="py-3 px-3 font-semibold">First Usable</th>
-                    <th className="py-3 px-3 font-semibold">Last Usable</th>
-                    <th className="py-3 px-3 font-semibold">Broadcast</th>
-                    <th className="py-3 px-3 font-semibold">Gateway</th>
+                  <tr>
+                    <th scope="col" className="w-12">#</th>
+                    <th scope="col">Subnet Network</th>
+                    <th scope="col">Usable Host Range</th>
+                    <th scope="col">Broadcast Address</th>
+                    <th scope="col">Default Gateway</th>
+                    <th scope="col" className="text-right w-20">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 font-mono text-slate-200">
+                <tbody className="divide-y divide-slate-100 font-mono text-xs">
                   {result.ranges.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-white/[0.03] transition-colors"
-                    >
-                      <td className="py-3 px-3 text-slate-500">{row.id}</td>
-                      <td className="py-3 px-3 font-bold text-brand-sky">{row.network}</td>
-                      <td className="py-3 px-3 text-slate-300">{row.firstUsable}</td>
-                      <td className="py-3 px-3 text-slate-300">{row.lastUsable}</td>
-                      <td className="py-3 px-3 text-slate-400">{row.broadcast}</td>
-                      <td className="py-3 px-3 text-amber-400 font-semibold">{row.gateway}</td>
+                    <tr key={row.id}>
+                      <td className="text-slate-400 font-sans">{row.id}</td>
+                      <td>
+                        <strong className="text-slate-900 font-semibold">{row.network}</strong>
+                      </td>
+                      <td className="text-slate-700">
+                        {row.firstUsable} <span className="text-slate-400 font-sans">to</span> {row.lastUsable}
+                      </td>
+                      <td className="text-slate-500">{row.broadcast}</td>
+                      <td className="text-blue-700 font-medium">{row.gateway}</td>
+                      <td className="text-right">
+                        <button
+                          onClick={() => copyToClipboard(`${row.network} (${row.firstUsable} - ${row.lastUsable}, GW: ${row.gateway})`, `row-${row.id}`)}
+                          className="btn-copy"
+                          title="Copy subnet details"
+                        >
+                          {copiedKey === `row-${row.id}` ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedKey === `row-${row.id}` ? "Copied" : "Copy"}</span>
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
 
-          {/* DHCP & ACL Helpers Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* DHCP Scope Planning */}
-            <div className="glass-card rounded-2xl p-6 space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                DHCP Scope Architecture
-              </h4>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-slate-400">Available Pool Size:</span>
-                  <span className="font-mono text-white font-semibold">
-                    {result.dhcpScope.toLocaleString()} hosts
-                  </span>
+          {/* Practical Network Engineering Utilities */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* DHCP Scope Sizing */}
+            <section aria-labelledby="dhcp-scope-heading" className="panel p-5">
+              <h3 id="dhcp-scope-heading" className="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">
+                DHCP Pool Architecture (Recommended)
+              </h3>
+              <div className="mt-3 space-y-2.5 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-50">
+                  <span className="text-slate-600">Total Host Pool:</span>
+                  <span className="font-mono font-bold text-slate-900">{result.usableHosts} addresses</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-slate-400">Recommended Infrastructure Reserve (~10%):</span>
-                  <span className="font-mono text-amber-400 font-semibold">
-                    {result.dhcpReservations.toLocaleString()} addresses
-                  </span>
+                <div className="flex justify-between items-center py-1 border-b border-slate-50">
+                  <span className="text-slate-600">Static / Infrastructure Reserve (~10%):</span>
+                  <span className="font-mono font-medium text-amber-700">{result.dhcpReservations} addresses</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-slate-400">Dynamic Lease Scope:</span>
-                  <span className="font-mono text-emerald-400 font-semibold">
-                    {Math.max(0, result.dhcpScope - result.dhcpReservations).toLocaleString()} addresses
-                  </span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-600">Dynamic Client Leases:</span>
+                  <span className="font-mono font-bold text-emerald-700">{result.dhcpScope} addresses</span>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* ACL Helper */}
-            <div className="glass-card rounded-2xl p-6 space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Network className="w-4 h-4 text-brand-purple" />
-                Cisco / Juniper ACL Wildcard Helper
-              </h4>
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  value={aclMask}
-                  onChange={(e) => setAclMask(e.target.value)}
-                  placeholder="Subnet mask e.g. 255.255.255.192"
-                  className="flex-1 px-4 py-2.5 rounded-xl glass-input text-xs font-mono"
-                />
-                <button
-                  onClick={handleGenerateAcl}
-                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-all"
-                >
-                  Invert Mask
-                </button>
-              </div>
-              {aclWildcard && (
-                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 font-mono text-xs text-purple-300">
-                  <code>access-list 100 permit ip {baseNet} {aclWildcard}</code>
+            {/* Cisco / Juniper ACL Wildcard Helper */}
+            <section aria-labelledby="acl-helper-heading" className="panel p-5">
+              <h3 id="acl-helper-heading" className="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">
+                Firewall & ACL Wildcard Notation
+              </h3>
+              <div className="mt-3 space-y-2 text-xs">
+                <p className="text-slate-600">
+                  Inverse bit mask used in Cisco IOS access lists, OSPF network statements, and Juniper firewall filters:
+                </p>
+                <div className="p-2.5 rounded bg-slate-50 border border-slate-200 font-mono flex items-center justify-between">
+                  <span className="text-slate-800 font-semibold">{result.cidr} wildcard {result.wildcard}</span>
+                  <button
+                    onClick={() => copyToClipboard(result.wildcard, "acl-wildcard")}
+                    className="btn-copy"
+                  >
+                    {copiedKey === "acl-wildcard" ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedKey === "acl-wildcard" ? "Copied" : "Copy Wildcard"}</span>
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            </section>
           </div>
         </div>
       )}
