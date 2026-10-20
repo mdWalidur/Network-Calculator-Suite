@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #f1f5f9;
+  --background: #070714;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #ffffff;
+}
+
+/* Custom modern scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070714;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+  border-radius: 9999px;
+  border: 2px solid #070714;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(14, 14, 34, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-card-hover:hover {
+    border-color: rgba(139, 92, 246, 0.35);
+    box-shadow: 0 12px 40px -10px rgba(139, 92, 246, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .glass-input {
+    background: rgba(18, 18, 44, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+    transition: all 0.2s ease;
+  }
+
+  .glass-input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    background: rgba(22, 22, 54, 0.85);
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 40%, #8b5cf6 80%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #ffffff 0%, #67e8f9 50%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .netbit {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+
+  .hostbit {
+    color: #38bdf8;
+    font-weight: 700;
+  }
+}
+
