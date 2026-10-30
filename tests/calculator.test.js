@@ -1,6 +1,33 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const calc = require('../app.js');
+const core = require('../src/lib/calculator.ts');
+
+describe('Current application calculator regressions', () => {
+  test('IPv6 rejects non-integer and out-of-range prefixes', () => {
+    for (const prefix of [-1, 129, 64.5, NaN]) {
+      assert.throws(() => core.calculateIPv6('2001:db8::1', prefix), /IPv6 prefix must be an integer between 0 and 128/);
+    }
+    assert.equal(core.calculateIPv6('2001:db8::1', 128).network, '2001:db8::1/128');
+  });
+
+  test('VLSM keeps the total correct at the end of IPv4 space', () => {
+    const result = core.calculateVLSM('255.255.255.252', 30, [2]);
+    assert.equal(result.totalAllocated, 4);
+    assert.equal(result.exceedsCapacity, false);
+    assert.equal(result.allocations[0].network, '255.255.255.252/30');
+  });
+
+  test('VLSM rejects allocations that would wrap past the IPv4 address space', () => {
+    assert.throws(() => core.calculateVLSM('255.255.255.252', 30, [2, 2]), /exceeds the IPv4 address space/);
+  });
+
+  test('IPv4 /0 subnet calculation preserves the full address range', () => {
+    const result = core.calculateIPv4('0.0.0.0', 0, 0);
+    assert.equal(result.ranges[0].network, '0.0.0.0/0');
+    assert.equal(result.ranges[0].broadcast, '255.255.255.255');
+  });
+});
 
 describe('IPv4 Utilities', () => {
   test('ipToOctets parses valid IPs with or without whitespace', () => {

@@ -124,7 +124,7 @@ export function fromInt(n: number): [number, number, number, number] {
 }
 
 export function maskInt(prefix: number): number {
-  if (prefix < 0 || prefix > 32) throw new Error("Prefix must be between 0 and 32");
+  if (!Number.isInteger(prefix) || prefix < 0 || prefix > 32) throw new Error("Prefix must be an integer between 0 and 32");
   return prefix === 0 ? 0 : ((0xffffffff << (32 - prefix)) >>> 0);
 }
 
@@ -184,7 +184,7 @@ export function calculateIPv4(
   const subnetBits = desiredPrefix - basePrefix;
   const numSubnets = Math.pow(2, subnetBits);
   const hostBits = 32 - desiredPrefix;
-  const subnetSize = Math.pow(2, hostBits) >>> 0;
+  const subnetSize = Math.pow(2, hostBits);
   const usableHosts = hostBits <= 1 ? 0 : Math.pow(2, hostBits) - 2;
 
   const mask = maskFromPrefix(desiredPrefix);
@@ -197,8 +197,8 @@ export function calculateIPv4(
   const ranges: IPv4SubnetRange[] = [];
 
   for (let i = 0; i < renderLimit; i++) {
-    const networkInt = (baseNetInt + i * subnetSize) >>> 0;
-    const broadcastInt = (networkInt + subnetSize - 1) >>> 0;
+    const networkInt = baseNetInt + i * subnetSize;
+    const broadcastInt = networkInt + subnetSize - 1;
     const firstInt = (networkInt + 1) >>> 0;
     const lastInt = (broadcastInt - 1) >>> 0;
 
@@ -318,6 +318,9 @@ export function compressIPv6(fullHex: string): string {
 }
 
 export function ipv6Network(fullHex: string, prefix: number): string {
+  if (!Number.isInteger(prefix) || prefix < 0 || prefix > 128) {
+    throw new Error("IPv6 prefix must be an integer between 0 and 128");
+  }
   const hextets = fullHex.split(":").map((h) => parseInt(h, 16));
   const netHextets = hextets.map((val, idx) => {
     const bitStart = idx * 16;
@@ -332,6 +335,9 @@ export function ipv6Network(fullHex: string, prefix: number): string {
 }
 
 export function calculateIPv6(inputAddress: string, prefix: number): IPv6CalculationResult {
+  if (!Number.isInteger(prefix) || prefix < 0 || prefix > 128) {
+    throw new Error("IPv6 prefix must be an integer between 0 and 128");
+  }
   const fullExpanded = normalizeIPv6(inputAddress);
   const netFull = ipv6Network(fullExpanded, prefix);
   const networkCompressed = compressIPv6(netFull);
@@ -361,9 +367,10 @@ export function calculateVLSM(
   const baseNetInt = (baseInt & baseMask) >>> 0;
   const baseCapacity = Math.pow(2, 32 - basePrefix);
 
-  const sortedHosts = [...hostRequirements]
-    .filter((h) => !isNaN(h) && h > 0)
-    .sort((a, b) => b - a);
+  if (!Array.isArray(hostRequirements) || hostRequirements.some((h) => !Number.isSafeInteger(h) || h <= 0 || h > 0xfffffffe)) {
+    throw new Error("Host requirements must be positive safe integers");
+  }
+  const sortedHosts = [...hostRequirements].sort((a, b) => b - a);
 
   if (sortedHosts.length === 0) {
     throw new Error("Please supply at least one positive host requirement");
@@ -376,7 +383,7 @@ export function calculateVLSM(
   for (let i = 0; i < sortedHosts.length; i++) {
     const req = sortedHosts[i];
     const prefix = smallestPrefixForHosts(req);
-    const subnetSize = Math.pow(2, 32 - prefix) >>> 0;
+    const subnetSize = Math.pow(2, 32 - prefix);
     const usableHosts = 32 - prefix <= 1 ? 0 : Math.pow(2, 32 - prefix) - 2;
 
     if (prefix < basePrefix) {
@@ -384,7 +391,10 @@ export function calculateVLSM(
     }
 
     const networkInt = currentNetInt;
-    const broadcastInt = (networkInt + subnetSize - 1) >>> 0;
+    const broadcastInt = networkInt + subnetSize - 1;
+    if (broadcastInt > 0xffffffff) {
+      throw new Error(`Subnet #${i + 1} exceeds the IPv4 address space`);
+    }
     const firstInt = (networkInt + 1) >>> 0;
     const lastInt = (broadcastInt - 1) >>> 0;
 
@@ -410,7 +420,7 @@ export function calculateVLSM(
       gateway: gw,
     });
 
-    currentNetInt = (networkInt + subnetSize) >>> 0;
+    currentNetInt = networkInt + subnetSize;
   }
 
   const totalAllocated = currentNetInt - baseNetInt;
